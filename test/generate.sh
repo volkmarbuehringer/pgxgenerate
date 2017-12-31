@@ -23,7 +23,7 @@ export PU_DB_LOG="debug" ##loglevel von pgx
 rm generprep/*.go
 rm gener/*.go
 
-go run ../pgtools/generprep.go "agg%,aggv%" "prounix.de/test" "../test/generprep" "eeacollector,sdbms"
+go run ../pgtools/generprep.go "agg%,aggv%" "pgxgenerate/test" "../test/generprep" "eeacollector,sdbms"
 
 go run generate.go
 
