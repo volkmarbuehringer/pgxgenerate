@@ -3,12 +3,13 @@ package prep
 import (
 	"fmt"
 
+	"pgxgenerate/pgtools/db"
+	"pgxgenerate/pgtools/writer"
+
 	"github.com/pkg/errors"
-	"prounix.de/pgtools/db"
-	"prounix.de/pgtools/writer"
 )
 
-func GenerPrep(dirname string, importpre string, prepTypes *map[string]prepTyp) error {
+func GenerPrep(dirname string, prepTypes *map[string]prepTyp) error {
 	fmt.Println("starte generierung phase2")
 	con, err := db.GetPool().Acquire()
 	if err != nil {
@@ -41,7 +42,7 @@ func GenerPrep(dirname string, importpre string, prepTypes *map[string]prepTyp) 
 
 			return fmt.Errorf("fehler bei prepare %s %s", t.schema, k)
 		} else {
-			if err := writeStruct(k, writer.Init(dirname), true, stmt.FieldDescriptions, t.aname, importpre, t.schema); err != nil {
+			if err := writeStruct(k, writer.Init(dirname), true, stmt.FieldDescriptions, t.aname, t.schema); err != nil {
 
 				return errors.Wrapf(err, "fehler gen bei %s", k)
 			}

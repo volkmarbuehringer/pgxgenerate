@@ -3,8 +3,8 @@ package generprep
 import 	"github.com/jackc/pgx/pgtype"
 import 	"github.com/jackc/pgx"
  
-import "prounix.de/pgtools/db"
-const Agg_steuerungseinheitName="agg_steuerungseinheit" 
+import "pgxgenerate/pgtools/db"
+		const Agg_steuerungseinheitName="agg_steuerungseinheit" 
 
 
 type Agg_steuerungseinheit struct{

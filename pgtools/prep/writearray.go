@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"prounix.de/pgtools/writer"
+	"pgxgenerate/pgtools/writer"
 )
 
 func writeArrayCode(name string, f *writer.Writer, bname string, schema string) error {

@@ -6,11 +6,11 @@ import (
 
 	"github.com/jackc/pgx"
 
-	"prounix.de/pgtools/db"
-	"prounix.de/pgtools/writer"
+	"pgxgenerate/pgtools/db"
+	"pgxgenerate/pgtools/writer"
 )
 
-func writeStruct(name string, f *writer.Writer, flag bool, fields []pgx.FieldDescription, aname string, importpre string, schema string) error {
+func writeStruct(name string, f *writer.Writer, flag bool, fields []pgx.FieldDescription, aname string, schema string) error {
 
 	if w, err := f.Create(name + ".go"); err != nil {
 		return err
@@ -22,8 +22,8 @@ func writeStruct(name string, f *writer.Writer, flag bool, fields []pgx.FieldDes
 
 		for _, field := range fields {
 			if strings.Contains(field.DataTypeName, "generprep.") {
-				fmt.Fprintf(w, `import 	"%s/generprep"
-					`, importpre)
+				fmt.Fprintf(w, `import 	%q
+					`, importGenerPre)
 				break
 			}
 		}

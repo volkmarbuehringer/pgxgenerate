@@ -3,8 +3,8 @@ package generprep
 import 	"github.com/jackc/pgx/pgtype"
 import 	"github.com/jackc/pgx"
  
-import "prounix.de/pgtools/db"
-type Agg_steuerungseinheitArray []Agg_steuerungseinheit
+import "pgxgenerate/pgtools/db"
+		type Agg_steuerungseinheitArray []Agg_steuerungseinheit
 
 		func (src *Agg_steuerungseinheitArray) AssignTo(dst interface{}) error {
 

@@ -3,8 +3,8 @@ package generprep
 import 	"github.com/jackc/pgx/pgtype"
 import 	"github.com/jackc/pgx"
  
-import "prounix.de/pgtools/db"
-type Agg_eeaopcserverArray []Agg_eeaopcserver
+import "pgxgenerate/pgtools/db"
+		type Agg_eeaopcserverArray []Agg_eeaopcserver
 
 		func (src *Agg_eeaopcserverArray) AssignTo(dst interface{}) error {
 

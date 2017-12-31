@@ -8,12 +8,13 @@ import (
 
 	"golang.org/x/sync/errgroup"
 
+	"pgxgenerate/test/gener"
+	"pgxgenerate/test/generprep"
+
 	"github.com/jackc/pgx"
 	"github.com/jackc/pgx/pgtype"
-	"prounix.de/test/gener"
-	"prounix.de/test/generprep"
 
-	"prounix.de/pgtools/db"
+	"pgxgenerate/pgtools/db"
 )
 
 func test555() {
@@ -429,10 +430,11 @@ func testinsr() {
 	pool := db.GetPool()
 	var input gener.Testinsr
 	var output gener.TestinsrReturn
-	input.Opc_name.Set("serverda")
+
+	input.Opc_name.SetVarchar("serverda")
 	//input.Addtime.Set(time.Now())
-	input.Opc_scadanr.Set(3453334)
-	input.Opc_uri.Set("gagaga")
+	input.Opc_scadanr.SetInt(3453334)
+	input.Opc_uri.SetVarchar("gagaga")
 	err1 := pool.QueryRow(gener.TestinsrName, input.Scanner()...).Scan(output.Scanner()...)
 	if err1 != nil {
 		panic(err1)
@@ -451,10 +453,10 @@ func testins() {
 	for i := 0; i < 10000; i++ {
 		//cmd, err1 := pool.Exec(gener.TestinsName, input.Scanner()...)
 		var input gener.Testins
-		input.Opc_name.Set("serverda")
+		input.Opc_name.SetVarchar("serverda")
 		//input.Addtime.Set(time.Now())
-		input.Opc_scadanr.Set(i + 1000000)
-		input.Opc_uri.Set("gagaga")
+		input.Opc_scadanr.SetInt(int32(i + 1000000))
+		input.Opc_uri.SetVarchar("gagaga")
 		batch.Queue(gener.TestinsName, input.Scanner(), []pgtype.OID{}, []int16{})
 
 	}
@@ -488,11 +490,11 @@ func testins() {
 func test0() {
 	pool := db.GetPool()
 	var input gener.Test0
-	input.Opc_id.Set(530)
-	input.Opc_name.Set("gaga")
+	input.Opc_id.SetInt(530)
+	input.Opc_name.SetText("gaga")
 	//input.Addtime.Set(time.Now())
-	input.Opc_preverror.Set("gagaga")
-	input.Opc_tcptim.Set(555)
+	input.Opc_preverror.SetText("gagaga")
+	input.Opc_tcptim.SetInt(555)
 
 	cmd, err1 := pool.Exec(gener.Test0Name, input.Scanner()...)
 

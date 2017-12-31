@@ -1,11 +1,3 @@
-#export PGHOST=localhost
-#export PGPORT=5432
-#export PGDATABASE="boreas"
-#export PGUSER=postgres
-#export PGPASSWORD=postgres
-#export PGSSLMODE="allow"
-#export PGAPPNAME=goofer
-
 
 #lokales postgres
 export PGHOST=localhost
@@ -23,7 +15,7 @@ export PU_DB_LOG="debug" ##loglevel von pgx
 rm generprep/*.go
 rm gener/*.go
 
-go run ../pgtools/generprep.go "agg%,aggv%" "pgxgenerate/test" "../test/generprep" "eeacollector,sdbms"
+go run ../pgtools/generprep.go "agg%,aggv%" "pgxgenerate/test" "../test" "pgxgenerate" "eeacollector,sdbms"
 
 go run generate.go
 

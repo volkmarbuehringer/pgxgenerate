@@ -17,7 +17,8 @@ import 	"github.com/jackc/pgx"
 	} else {
 		fmt.Fprintf(w, "package gener\n")
 	}
-	fmt.Fprintln(w, `import "prounix.de/pgtools/db"`)
+	fmt.Fprintf(w, `import %q
+		`, importDB)
 }
 
 func writeMethoden(w io.Writer, name string) {

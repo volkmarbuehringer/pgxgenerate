@@ -2,12 +2,19 @@ package db
 
 import (
 	"encoding/json"
+	"time"
 
 	"github.com/jackc/pgx/pgtype"
 )
 
 type Bool struct {
 	pgtype.Bool
+}
+
+func (v *Bool) SetBool(b bool) {
+	v.Status = pgtype.Present
+	v.Bool.Bool = b
+
 }
 
 func (v Bool) MarshalJSON() ([]byte, error) {
@@ -44,6 +51,12 @@ type Float8 struct {
 	pgtype.Float8
 }
 
+func (v *Float8) SetFloat(b float64) {
+	v.Status = pgtype.Present
+	v.Float = b
+
+}
+
 type Float8Array = pgtype.Float8Array
 
 type Int2 struct {
@@ -54,6 +67,12 @@ type Int2Array = pgtype.Int2Array
 
 type Int4 struct {
 	pgtype.Int4
+}
+
+func (v *Int4) SetInt(b int32) {
+	v.Status = pgtype.Present
+	v.Int = b
+
 }
 
 func (v Int4) MarshalJSON() ([]byte, error) {
@@ -68,6 +87,12 @@ type Int4Array = pgtype.Int4Array
 
 type Int8 struct {
 	pgtype.Int8
+}
+
+func (v *Int8) SetInt(b int) {
+	v.Status = pgtype.Present
+	v.Int = int64(b)
+
 }
 
 type Int8Array = pgtype.Int8Array
@@ -89,6 +114,12 @@ type Text struct {
 	pgtype.Text
 }
 
+func (v *Text) SetText(b string) {
+	v.Status = pgtype.Present
+	v.String = b
+
+}
+
 func (v Text) MarshalJSON() ([]byte, error) {
 	if v.Status == pgtype.Present {
 		return json.Marshal(v.String)
@@ -103,6 +134,11 @@ type Timestamp struct {
 	pgtype.Timestamp
 }
 
+func (v *Timestamp) SetTimestamp(b time.Time) {
+	v.Status = pgtype.Present
+	v.Time = b
+
+}
 func (v Timestamp) MarshalJSON() ([]byte, error) {
 	if v.Status == pgtype.Present {
 		return json.Marshal(v.Time)
@@ -115,6 +151,12 @@ type TimestampArray = pgtype.TimestampArray
 
 type Timestamptz struct {
 	pgtype.Timestamptz
+}
+
+func (v *Timestamptz) SetTimestamp(b time.Time) {
+	v.Status = pgtype.Present
+	v.Time = b
+
 }
 
 func (v Timestamptz) MarshalJSON() ([]byte, error) {
@@ -134,6 +176,12 @@ type UUIDArray = pgtype.UUIDArray
 
 type Varchar struct {
 	pgtype.Varchar
+}
+
+func (v *Varchar) SetVarchar(b string) {
+	v.Status = pgtype.Present
+	v.String = b
+
 }
 
 func (v Varchar) MarshalJSON() ([]byte, error) {

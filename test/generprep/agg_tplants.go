@@ -3,8 +3,8 @@ package generprep
 import 	"github.com/jackc/pgx/pgtype"
 import 	"github.com/jackc/pgx"
  
-import "prounix.de/pgtools/db"
-const Agg_tplantsName="agg_tplants" 
+import "pgxgenerate/pgtools/db"
+		const Agg_tplantsName="agg_tplants" 
 
 
 type Agg_tplants struct{

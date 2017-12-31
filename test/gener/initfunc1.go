@@ -1,44 +1,15 @@
 package gener
 
-		import "prounix.de/pgtools/db"
-			
-func init(){
+		import "pgxgenerate/pgtools/db"
 
-db.InitScanMap[BoreasName]= func ()( []interface {}, interface{},[]string ) 	{
- var x Boreas
-return x.Scanner(), &x,BoreasColumns
+			func init(){
 
-	}
-db.PreqSQLMap[BoreasName]= `select *
-from opcserver
-left outer join (select eea_opcid,array_agg(t order by eea_plantnr) eeaopcserver
-from agg_eeaopcserver t
-group by eea_opcid ) t1 on eea_opcid = opc_id
-left outer join (select str_opcid , array_agg( t order by str_plantnr) steuerungseinheit
-from agg_steuerungseinheit t
-group by str_opcid) t2 on str_opcid = opc_id
-`
-
-db.InitScanMap[LocationName]= func ()( []interface {}, interface{},[]string ) 	{
- var x Location
-return x.Scanner(), &x,LocationColumns
+db.InitScanMap[Test0Name]= func ()( []interface {}, interface{},[]string ) 	{
+ var x Test0
+return x.Scanner(), &x,Test0Columns
 
 	}
-db.PreqSQLMap[LocationName]= `select x.*, plants from sdbms.tlocation x
-left outer join
-(
-select fulocno,array_agg(t) plants
-from sdbms.agg_tplants t
-group by fulocno
-) t on t.fulocno =x.fulocno
-`
-
-db.InitScanMap[Test1Name]= func ()( []interface {}, interface{},[]string ) 	{
- var x Test1
-return x.Scanner(), &x,Test1Columns
-
-	}
-db.PreqSQLMap[Test1Name]= `select * from opcserver
+db.PreqSQLMap[Test0Name]= `update   opcserver   set opc_tcptim=$1,opc_preverror=$2,opc_crdate=now(),opc_error=null   where opc_id=$4 and substr($3,1,1) = substr(opc_name,1,1)
 `
 
 db.InitScanMap[TestinsName]= func ()( []interface {}, interface{},[]string ) 	{
@@ -55,12 +26,33 @@ db.InitScanMap[TestinsrReturnName]= func ()( []interface {}, interface{},[]strin
 return x.Scanner(), &x,TestinsrReturnColumns
 
 	}
-db.InitScanMap[TlocationName]= func ()( []interface {}, interface{},[]string ) 	{
- var x Tlocation
-return x.Scanner(), &x,TlocationColumns
+db.InitScanMap[LocationName]= func ()( []interface {}, interface{},[]string ) 	{
+ var x Location
+return x.Scanner(), &x,LocationColumns
 
 	}
-db.PreqSQLMap[TlocationName]= `select * from sdbms.tlocation
+db.PreqSQLMap[LocationName]= `select x.*, plants from sdbms.tlocation x
+left outer join
+(
+select fulocno,array_agg(t) plants
+from sdbms.agg_tplants t
+group by fulocno
+) t on t.fulocno =x.fulocno
+`
+
+db.InitScanMap[BoreasName]= func ()( []interface {}, interface{},[]string ) 	{
+ var x Boreas
+return x.Scanner(), &x,BoreasColumns
+
+	}
+db.PreqSQLMap[BoreasName]= `select *
+from opcserver
+left outer join (select eea_opcid,array_agg(t order by eea_plantnr) eeaopcserver
+from agg_eeaopcserver t
+group by eea_opcid ) t1 on eea_opcid = opc_id
+left outer join (select str_opcid , array_agg( t order by str_plantnr) steuerungseinheit
+from agg_steuerungseinheit t
+group by str_opcid) t2 on str_opcid = opc_id
 `
 
 db.InitScanMap[InsplantName]= func ()( []interface {}, interface{},[]string ) 	{
@@ -98,12 +90,12 @@ fuplantid   ,
   )
 `
 
-db.InitScanMap[Test0Name]= func ()( []interface {}, interface{},[]string ) 	{
- var x Test0
-return x.Scanner(), &x,Test0Columns
+db.InitScanMap[Test1Name]= func ()( []interface {}, interface{},[]string ) 	{
+ var x Test1
+return x.Scanner(), &x,Test1Columns
 
 	}
-db.PreqSQLMap[Test0Name]= `update   opcserver   set opc_tcptim=$1,opc_preverror=$2,opc_crdate=now(),opc_error=null   where opc_id=$4 and substr($3,1,1) = substr(opc_name,1,1)
+db.PreqSQLMap[Test1Name]= `select * from opcserver
 `
 
 db.InitScanMap[TestinsrName]= func ()( []interface {}, interface{},[]string ) 	{
@@ -113,6 +105,14 @@ return x.Scanner(), &x,TestinsrColumns
 	}
 db.PreqSQLMap[TestinsrName]= `insert  into
   opcserver ( opc_name,opc_aktiv,opc_uri,opc_scadanr,opc_letzteanfrage) values( $1,false,$2,$3,now())   returning *
+`
+
+db.InitScanMap[TlocationName]= func ()( []interface {}, interface{},[]string ) 	{
+ var x Tlocation
+return x.Scanner(), &x,TlocationColumns
+
+	}
+db.PreqSQLMap[TlocationName]= `select * from sdbms.tlocation
 `
 
 }

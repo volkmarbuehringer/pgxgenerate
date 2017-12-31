@@ -9,7 +9,7 @@ import (
 	"github.com/jackc/pgx/pgtype"
 	"github.com/pkg/errors"
 
-	"prounix.de/pgtools/db"
+	"pgxgenerate/pgtools/db"
 )
 
 func Prep(prepSql map[string]string, prepTypes *map[string]prepTyp, prepStmt *map[string]*pgx.PreparedStatement) error {

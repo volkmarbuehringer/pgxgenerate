@@ -3,8 +3,8 @@ package generprep
 import 	"github.com/jackc/pgx/pgtype"
 import 	"github.com/jackc/pgx"
  
-import "prounix.de/pgtools/db"
-const Agg_eeaopcserverName="agg_eeaopcserver" 
+import "pgxgenerate/pgtools/db"
+		const Agg_eeaopcserverName="agg_eeaopcserver" 
 
 
 type Agg_eeaopcserver struct{

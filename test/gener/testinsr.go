@@ -1,6 +1,6 @@
 package gener
-import "prounix.de/pgtools/db"
-const TestinsrName="testinsr" 
+import "pgxgenerate/pgtools/db"
+		const TestinsrName="testinsr" 
 
 
 type Testinsr struct{

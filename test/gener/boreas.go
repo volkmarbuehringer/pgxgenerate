@@ -1,6 +1,6 @@
 package gener
-import "prounix.de/pgtools/db"
-import 	"prounix.de/test/generprep"
+import "pgxgenerate/pgtools/db"
+		import 	"pgxgenerate/test/generprep"
 					const BoreasName="boreas" 
 
 

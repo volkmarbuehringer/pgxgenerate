@@ -3,8 +3,8 @@ package generprep
 import 	"github.com/jackc/pgx/pgtype"
 import 	"github.com/jackc/pgx"
  
-import "prounix.de/pgtools/db"
-type Agg_tplantsArray []Agg_tplants
+import "pgxgenerate/pgtools/db"
+		type Agg_tplantsArray []Agg_tplants
 
 		func (src *Agg_tplantsArray) AssignTo(dst interface{}) error {
 
