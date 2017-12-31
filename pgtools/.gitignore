@@ -1,0 +1,39 @@
+REVISION.txt
+*.sublime-workspace
+#
+*.pyc
+.py27-*
+.py34-*
+.py35-*
+.py3-*
+.py27
+.py34
+.py35
+.py3
+*~
+.cache
+**/__pycache__/
+.coverage
+**/htmlcov/
+**/.tox/
+.junit.xml
+.DS_Store
+
+# Generierte API Docs und Logs
+docs/api/_output
+hercule.log
+
+# Eclipse + PyDev Projekt-Dateien
+.project
+.pydevproject
+.settings/
+.vscode/
+
+# PU Umgebung fuer Projekt
+.projekt
+
+# PyCharm IDE Projekt-Dateien
+.idea
+
+backups/
+artifacts/
