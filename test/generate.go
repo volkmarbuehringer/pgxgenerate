@@ -12,12 +12,10 @@ import (
 	"pgxgenerate/pgtools/prep"
 )
 
-const importpre = "pgxgenerate/test"
-
 func main() {
 
 	defer db.End()
-	flag, err := prep.Gesamt(".", importpre, "pgxgenerate")
+	flag, err := prep.Gesamt("test", "pgxgenerate")
 
 	if err != nil {
 		panic(err)

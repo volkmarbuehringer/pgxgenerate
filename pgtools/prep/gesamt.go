@@ -15,26 +15,28 @@ var importGenerPre string
 
 func dirSetter(importpre string, basis string) {
 	importDB = filepath.Join(basis, "pgtools/db")
-	importGenerPre = filepath.Join(importpre, "generprep")
+	importGenerPre = filepath.Join(basis, importpre, "generprep")
 
 }
 
-func GesamtPrep(prefix string, dir string, importpre string, basis string, schema string) error {
+func GesamtPrep(prefix string, importpre string, basis string, schema string) error {
 	prepTypes := make(map[string]prepTyp)
+	var dir = "../.."
 	dirSetter(importpre, basis)
 	if err := PrepList(prefix, &prepTypes, schema); err != nil {
 		return errors.Wrapf(err, "Views nicht gefunden")
 	}
 	fmt.Println("vor generierung weiter", len(prepTypes))
-	if err := GenerPrep(filepath.Join(dir, "generprep"), &prepTypes); err != nil {
+	if err := GenerPrep(filepath.Join(dir, basis, importpre, "generprep"), &prepTypes); err != nil {
 		return errors.Wrapf(err, "generierungsfehler")
 	}
 	return nil
 }
 
-func Gesamt(dir string, importpre string, basis string) (bool, error) {
+func Gesamt(importpre string, basis string) (bool, error) {
 	fmt.Println("vor generierung prep")
-	sql, err := ReadSQL(filepath.Join(dir, "sqls"))
+	var dir = "../.."
+	sql, err := ReadSQL(filepath.Join(dir, basis, importpre, "sqls"))
 	if err != nil {
 		return false, err
 	}
@@ -45,12 +47,12 @@ func Gesamt(dir string, importpre string, basis string) (bool, error) {
 		return false, err
 	}
 	fmt.Println("vor generierung start")
-	if err = Gener(filepath.Join(dir, "gener"), &prepStmt); err != nil {
+	if err = Gener(filepath.Join(dir, basis, importpre, "gener"), &prepStmt); err != nil {
 		return false, err
 	}
 
 	fmt.Println("vor generierung weiter")
-	if err = GenerPrep(filepath.Join(dir, "generprep"), &prepTypes); err != nil {
+	if err = GenerPrep(filepath.Join(dir, basis, importpre, "generprep"), &prepTypes); err != nil {
 		return false, err
 	}
 	if len(prepTypes) > 0 {
