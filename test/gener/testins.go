@@ -30,3 +30,12 @@ func (x *Testins) Scanner() []interface {}  {
 &x.Opc_scadanr,
 }
 }
+
+func (x *Testins)String()[]string{
+return []string{
+x.Opc_name.Stringer(),
+x.Opc_uri.Stringer(),
+x.Opc_scadanr.Stringer(),
+
+}
+}

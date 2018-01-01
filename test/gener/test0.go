@@ -33,3 +33,13 @@ func (x *Test0) Scanner() []interface {}  {
 &x.Opc_id,
 }
 }
+
+func (x *Test0)String()[]string{
+return []string{
+x.Opc_tcptim.Stringer(),
+x.Opc_preverror.Stringer(),
+x.Opc_name.Stringer(),
+x.Opc_id.Stringer(),
+
+}
+}

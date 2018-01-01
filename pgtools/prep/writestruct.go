@@ -89,6 +89,15 @@ func writeStruct(name string, f *writer.Writer, flag bool, fields []pgx.FieldDes
 
 			writeInit(w, name, aname, schema)
 
+		} else {
+			fmt.Fprintf(w, "\nfunc (x *%s)String()[]string{\nreturn []string{\n", strings.Title(name))
+
+			for _, field := range fields {
+				if !strings.Contains(field.DataTypeName, "generprep.") {
+					fmt.Fprintf(w, "x.%s.Stringer(),\n", strings.Title(field.Name))
+				}
+			}
+			fmt.Fprintln(w, "\n}\n}")
 		}
 
 		if err := w.Flush(); err != nil {

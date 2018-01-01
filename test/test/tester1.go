@@ -2,11 +2,12 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
+	"strings"
 	"time"
 
 	"golang.org/x/sync/errgroup"
+	"prounix.de/pgtools/writer"
 
 	"pgxgenerate/test/gener"
 	"pgxgenerate/test/generprep"
@@ -511,6 +512,17 @@ func test1() {
 		panic(err)
 	}
 	var x gener.Test1
+
+	f := writer.Init(".")
+
+	w, err := f.Create("dummy.csv")
+
+	if err != nil {
+		panic(err)
+	}
+
+	defer f.Close()
+
 	for rows.Next() {
 		if err := rows.Err(); err != nil {
 			panic(err)
@@ -519,11 +531,18 @@ func test1() {
 		if err := rows.Scan(x.Scanner()...); err != nil {
 			panic(err)
 		}
-		ga, _ := json.Marshal(x)
-		fmt.Println(string(ga))
-
+		/*
+			ga, err := json.Marshal(x)
+			if err != nil {
+				panic(err)
+			}
+			fmt.Println(string(ga))
+		*/
+		fmt.Fprintln(w, strings.Join(x.String(), ","))
 	}
 
+	w.Flush()
+	fmt.Println("fertig")
 }
 
 /*

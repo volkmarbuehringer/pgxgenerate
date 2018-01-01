@@ -2,6 +2,7 @@ package db
 
 import (
 	"encoding/json"
+	"strconv"
 	"time"
 
 	"github.com/jackc/pgx/pgtype"
@@ -14,6 +15,12 @@ type Bool struct {
 func (v *Bool) SetBool(b bool) {
 	v.Status = pgtype.Present
 	v.Bool.Bool = b
+
+}
+
+func (v *Bool) Stringer() string {
+
+	return strconv.FormatBool(v.Bool.Bool)
 
 }
 
@@ -37,12 +44,24 @@ type Date struct {
 	pgtype.Date
 }
 
+func (v *Date) Stringer() string {
+
+	return v.Time.Format(time.RFC3339)
+
+}
+
 type DateArray = pgtype.DateArray
 
 type Decimal = pgtype.Decimal
 
 type Float4 struct {
 	pgtype.Float4
+}
+
+func (v *Float4) Stringer() string {
+
+	return strconv.FormatFloat(float64(v.Float), 'f', 10, 32)
+
 }
 
 type Float4Array = pgtype.Float4Array
@@ -57,16 +76,34 @@ func (v *Float8) SetFloat(b float64) {
 
 }
 
+func (v *Float8) Stringer() string {
+
+	return strconv.FormatFloat(v.Float, 'f', 10, 64)
+
+}
+
 type Float8Array = pgtype.Float8Array
 
 type Int2 struct {
 	pgtype.Int2
 }
 
+func (v *Int2) Stringer() string {
+
+	return strconv.FormatInt(int64(v.Int), 10)
+
+}
+
 type Int2Array = pgtype.Int2Array
 
 type Int4 struct {
 	pgtype.Int4
+}
+
+func (v *Int4) Stringer() string {
+
+	return strconv.FormatInt(int64(v.Int), 10)
+
 }
 
 func (v *Int4) SetInt(b int32) {
@@ -95,6 +132,12 @@ func (v *Int8) SetInt(b int) {
 
 }
 
+func (v *Int8) Stringer() string {
+
+	return strconv.FormatInt(v.Int, 10)
+
+}
+
 type Int8Array = pgtype.Int8Array
 
 type Interval struct {
@@ -106,6 +149,13 @@ type JSONB = pgtype.JSONB
 type Numeric struct {
 	pgtype.Numeric
 }
+
+func (v *Numeric) Stringer() string {
+
+	return v.Numeric.Int.String()
+
+}
+
 type NumericArray = pgtype.NumericArray
 
 type OID = pgtype.OID
@@ -116,7 +166,13 @@ type Text struct {
 
 func (v *Text) SetText(b string) {
 	v.Status = pgtype.Present
-	v.String = b
+	v.Text.String = b
+
+}
+
+func (v *Text) Stringer() string {
+
+	return v.Text.String
 
 }
 
@@ -139,6 +195,13 @@ func (v *Timestamp) SetTimestamp(b time.Time) {
 	v.Time = b
 
 }
+
+func (v *Timestamp) Stringer() string {
+
+	return v.Time.Format(time.RFC3339)
+
+}
+
 func (v Timestamp) MarshalJSON() ([]byte, error) {
 	if v.Status == pgtype.Present {
 		return json.Marshal(v.Time)
@@ -156,6 +219,12 @@ type Timestamptz struct {
 func (v *Timestamptz) SetTimestamp(b time.Time) {
 	v.Status = pgtype.Present
 	v.Time = b
+
+}
+
+func (v *Timestamptz) Stringer() string {
+
+	return v.Time.Format(time.RFC3339)
 
 }
 
@@ -180,7 +249,13 @@ type Varchar struct {
 
 func (v *Varchar) SetVarchar(b string) {
 	v.Status = pgtype.Present
-	v.String = b
+	v.Varchar.String = b
+
+}
+
+func (v *Varchar) Stringer() string {
+
+	return v.Varchar.String
 
 }
 

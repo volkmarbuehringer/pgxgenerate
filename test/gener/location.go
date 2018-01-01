@@ -94,3 +94,32 @@ func (x *Location) Scanner() []interface {}  {
 &x.Plants,
 }
 }
+
+func (x *Location)String()[]string{
+return []string{
+x.Fulocno.Stringer(),
+x.Fuservicestatid.Stringer(),
+x.Fclocname.Stringer(),
+x.Fclocation.Stringer(),
+x.Funoplants.Stringer(),
+x.Fccountry.Stringer(),
+x.Fctelno.Stringer(),
+x.Fosettime.Stringer(),
+x.Fftimeoffset.Stringer(),
+x.Fubaudrate.Stringer(),
+x.Fudatablocksize.Stringer(),
+x.Fuminreq.Stringer(),
+x.Fudailyreq.Stringer(),
+x.Fumonthlyreq.Stringer(),
+x.Fustatereq.Stringer(),
+x.Fuweekreq.Stringer(),
+x.Fuavailreq.Stringer(),
+x.Fopostcode.Stringer(),
+x.Fodatarequest.Stringer(),
+x.Foshortdial.Stringer(),
+x.Fcip1.Stringer(),
+x.Foincurrentlist.Stringer(),
+x.Foishdcfileassigned.Stringer(),
+
+}
+}

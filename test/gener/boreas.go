@@ -91,3 +91,30 @@ func (x *Boreas) Scanner() []interface {}  {
 &x.Steuerungseinheit,
 }
 }
+
+func (x *Boreas)String()[]string{
+return []string{
+x.Opc_id.Stringer(),
+x.Opc_name.Stringer(),
+x.Opc_uri.Stringer(),
+x.Opc_scadanr.Stringer(),
+x.Opc_letzteanfrage.Stringer(),
+x.Opc_letzteresponse.Stringer(),
+x.Opc_aktiv.Stringer(),
+x.Opc_crdate.Stringer(),
+x.Opc_upddate.Stringer(),
+x.Opc_error.Stringer(),
+x.Opc_preverror.Stringer(),
+x.Opc_tcptim.Stringer(),
+x.Opc_proctim.Stringer(),
+x.Opc_conttim.Stringer(),
+x.Opc_tottim.Stringer(),
+x.Opc_letzteresponseok.Stringer(),
+x.Opc_runs.Stringer(),
+x.Opc_timediff.Stringer(),
+x.Opc_timestamp.Stringer(),
+x.Eea_opcid.Stringer(),
+x.Str_opcid.Stringer(),
+
+}
+}

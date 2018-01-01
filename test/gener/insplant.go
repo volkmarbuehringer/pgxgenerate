@@ -60,3 +60,22 @@ func (x *Insplant) Scanner() []interface {}  {
 &x.Foserialchanged,
 }
 }
+
+func (x *Insplant)String()[]string{
+return []string{
+x.Fuplantid.Stringer(),
+x.Fulocno.Stringer(),
+x.Fuplantno.Stringer(),
+x.Fuplantcode.Stringer(),
+x.Fuspecialid.Stringer(),
+x.Fuserieno.Stringer(),
+x.Fdcomdate.Stringer(),
+x.Fdturnoff.Stringer(),
+x.Fcplantalias.Stringer(),
+x.Fcplanthwtype.Stringer(),
+x.Fuplantpower.Stringer(),
+x.Foincurrentlist.Stringer(),
+x.Foserialchanged.Stringer(),
+
+}
+}
