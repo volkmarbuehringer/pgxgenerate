@@ -15,7 +15,10 @@ func writeArrayCode(name string, f *writer.Writer, bname string, schema string) 
 
 		defer f.Close()
 
-		writeHeader(w, true)
+		writeHeader(w, `import 	"fmt"
+		import 	"github.com/jackc/pgx/pgtype"
+		import 	"github.com/jackc/pgx"
+		`)
 		fmt.Fprintf(w, `type %[1]sArray []%[1]s
 
 		func (src *%[1]sArray) AssignTo(dst interface{}) error {

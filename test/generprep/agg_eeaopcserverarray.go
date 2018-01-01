@@ -1,10 +1,10 @@
 package generprep
+			import "pgxgenerate/pgtools/db"
 			import 	"fmt"
-import 	"github.com/jackc/pgx/pgtype"
-import 	"github.com/jackc/pgx"
- 
-import "pgxgenerate/pgtools/db"
-		type Agg_eeaopcserverArray []Agg_eeaopcserver
+		import 	"github.com/jackc/pgx/pgtype"
+		import 	"github.com/jackc/pgx"
+		
+			type Agg_eeaopcserverArray []Agg_eeaopcserver
 
 		func (src *Agg_eeaopcserverArray) AssignTo(dst interface{}) error {
 

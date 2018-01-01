@@ -1,6 +1,7 @@
 package gener
-import "pgxgenerate/pgtools/db"
-		const TestinsrReturnName="testinsrReturn" 
+			import "pgxgenerate/pgtools/db"
+			
+			const TestinsrReturnName="testinsrReturn" 
 
 
 type TestinsrReturn struct{

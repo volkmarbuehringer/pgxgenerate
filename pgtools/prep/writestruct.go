@@ -10,7 +10,7 @@ import (
 	"pgxgenerate/pgtools/writer"
 )
 
-func writeStruct(name string, f *writer.Writer, flag bool, fields []pgx.FieldDescription, aname string, schema string) error {
+func writeStruct(name string, f *writer.Writer, flag bool, fields []pgx.FieldDescription, aname string, schema string, ext string) error {
 
 	if w, err := f.Create(name + ".go"); err != nil {
 		return err
@@ -18,15 +18,7 @@ func writeStruct(name string, f *writer.Writer, flag bool, fields []pgx.FieldDes
 
 		defer f.Close()
 
-		writeHeader(w, flag)
-
-		for _, field := range fields {
-			if strings.Contains(field.DataTypeName, "generprep.") {
-				fmt.Fprintf(w, `import 	%q
-					`, importGenerPre)
-				break
-			}
-		}
+		writeHeader(w, ext)
 
 		fmt.Fprintf(w, "const %[1]sName=%[2]q \n\n\ntype %[1]s struct{\n", strings.Title(name), name)
 

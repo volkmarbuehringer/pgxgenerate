@@ -1,7 +1,8 @@
 package gener
-import "pgxgenerate/pgtools/db"
-		import 	"pgxgenerate/test/generprep"
-					const LocationName="location" 
+			import "pgxgenerate/pgtools/db"
+			import 	"pgxgenerate/test/generprep"
+								
+			const LocationName="location" 
 
 
 type Location struct{

@@ -2,6 +2,7 @@ package prep
 
 import (
 	"fmt"
+	"io"
 	"path/filepath"
 
 	"github.com/jackc/pgx"
@@ -10,24 +11,31 @@ import (
 	"pgxgenerate/pgtools/db"
 )
 
-var importDB string
-var importGenerPre string
+var writeHeader func(w io.Writer, header string)
 
-func dirSetter(importpre string, basis string) {
-	importDB = filepath.Join(basis, "pgtools/db")
-	importGenerPre = filepath.Join(basis, importpre, "generprep")
+func dirSetter(basis string, packname string) {
+	importDB := filepath.Join(basis, "pgtools/db")
+
+	writeHeader = func(w io.Writer, header string) {
+
+		fmt.Fprintf(w, `package %s
+			import %q
+			%s
+			`, packname, importDB, header)
+	}
 
 }
 
 func GesamtPrep(prefix string, importpre string, basis string, schema string) error {
 	prepTypes := make(map[string]prepTyp)
 	var dir = "../.."
-	dirSetter(importpre, basis)
 	if err := PrepList(prefix, &prepTypes, schema); err != nil {
 		return errors.Wrapf(err, "Views nicht gefunden")
 	}
 	fmt.Println("vor generierung weiter", len(prepTypes))
-	if err := GenerPrep(filepath.Join(dir, basis, importpre, "generprep"), &prepTypes); err != nil {
+	dirSetter(basis, "generprep")
+
+	if err := GenerPrep(dir, filepath.Join(basis, importpre, "generprep"), &prepTypes); err != nil {
 		return errors.Wrapf(err, "generierungsfehler")
 	}
 	return nil
@@ -42,20 +50,21 @@ func Gesamt(importpre string, basis string) (bool, error) {
 	}
 	prepTypes := make(map[string]prepTyp)
 	prepStmt := make(map[string]*pgx.PreparedStatement)
-	dirSetter(importpre, basis)
+	dirSetter(basis, "gener")
 	if err := Prep(sql, &prepTypes, &prepStmt); err != nil {
 		return false, err
 	}
 	fmt.Println("vor generierung start")
-	if err = Gener(filepath.Join(dir, basis, importpre, "gener"), &prepStmt); err != nil {
-		return false, err
-	}
-
-	fmt.Println("vor generierung weiter")
-	if err = GenerPrep(filepath.Join(dir, basis, importpre, "generprep"), &prepTypes); err != nil {
+	if err = Gener(dir, filepath.Join(basis, importpre, "gener"), &prepStmt); err != nil {
 		return false, err
 	}
 	if len(prepTypes) > 0 {
+		dirSetter(basis, "generprep")
+		fmt.Println("vor generierung weiter")
+		if err = GenerPrep(dir, filepath.Join(basis, importpre, "generprep"), &prepTypes); err != nil {
+			return false, err
+		}
+
 		return true, nil
 	} else {
 		return false, nil

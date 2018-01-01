@@ -2,6 +2,7 @@ package prep
 
 import (
 	"fmt"
+	"path/filepath"
 
 	"pgxgenerate/pgtools/db"
 	"pgxgenerate/pgtools/writer"
@@ -9,12 +10,13 @@ import (
 	"github.com/pkg/errors"
 )
 
-func GenerPrep(dirname string, prepTypes *map[string]prepTyp) error {
+func GenerPrep(dir string, importer string, prepTypes *map[string]prepTyp) error {
 	fmt.Println("starte generierung phase2")
 	con, err := db.GetPool().Acquire()
 	if err != nil {
 		return err
 	}
+	var dirname = filepath.Join(dir, importer)
 
 	if len(*prepTypes) == 0 {
 		f := writer.Init(dirname)
@@ -23,36 +25,40 @@ func GenerPrep(dirname string, prepTypes *map[string]prepTyp) error {
 			return err
 		} else {
 
-			fmt.Fprintf(w, `package generprep
+			writeHeader(w, `
+	type Dummy db.Text
 
-			type Dummy int
+	`)
 
-				`)
 			w.Flush()
 			f.Close()
 
 		}
 
-	}
+	} else {
 
-	fmt.Println("vor generinit", len(*prepTypes))
-	for k, t := range *prepTypes {
+		fmt.Println("vor generinit", len(*prepTypes))
+		for k, t := range *prepTypes {
 
-		if stmt, err := con.Prepare(k, fmt.Sprintf("select * from %q.%q", t.schema, k)); err != nil {
+			if stmt, err := con.Prepare(k, fmt.Sprintf("select * from %q.%q", t.schema, k)); err != nil {
 
-			return fmt.Errorf("fehler bei prepare %s %s", t.schema, k)
-		} else {
-			if err := writeStruct(k, writer.Init(dirname), true, stmt.FieldDescriptions, t.aname, t.schema); err != nil {
+				return fmt.Errorf("fehler bei prepare %s %s", t.schema, k)
+			} else {
+				if err := writeStruct(k, writer.Init(dirname), true, stmt.FieldDescriptions, t.aname, t.schema, `import 	"fmt"
+			import 	"github.com/jackc/pgx/pgtype"
+			import 	"github.com/jackc/pgx"
+						`); err != nil {
 
-				return errors.Wrapf(err, "fehler gen bei %s", k)
+					return errors.Wrapf(err, "fehler gen bei %s", k)
+				}
+				if err := writeArrayCode(k, writer.Init(dirname), t.bname, t.schema); err != nil {
+					return errors.Wrapf(err, "fehler gen bei %s", k)
+				}
+				fmt.Println("schreibe init", k, t.aname, t.bname)
+
 			}
-			if err := writeArrayCode(k, writer.Init(dirname), t.bname, t.schema); err != nil {
-				return errors.Wrapf(err, "fehler gen bei %s", k)
-			}
-			fmt.Println("schreibe init", k, t.aname, t.bname)
 
 		}
-
 	}
 	fmt.Println("ende generierung phase2")
 	return nil

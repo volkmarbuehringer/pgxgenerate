@@ -1,7 +1,8 @@
 package gener
-import "pgxgenerate/pgtools/db"
-		import 	"pgxgenerate/test/generprep"
-					const BoreasName="boreas" 
+			import "pgxgenerate/pgtools/db"
+			import 	"pgxgenerate/test/generprep"
+								
+			const BoreasName="boreas" 
 
 
 type Boreas struct{

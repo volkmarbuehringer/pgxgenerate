@@ -17,6 +17,7 @@ rm gener/*.go
 
 go run ../pgtools/generprep.go "agg%,aggv%" "test" "pgxgenerate" "eeacollector,sdbms"
 
+
 go run generate.go
 
 

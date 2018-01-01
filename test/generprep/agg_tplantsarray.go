@@ -1,10 +1,10 @@
 package generprep
+			import "pgxgenerate/pgtools/db"
 			import 	"fmt"
-import 	"github.com/jackc/pgx/pgtype"
-import 	"github.com/jackc/pgx"
- 
-import "pgxgenerate/pgtools/db"
-		type Agg_tplantsArray []Agg_tplants
+		import 	"github.com/jackc/pgx/pgtype"
+		import 	"github.com/jackc/pgx"
+		
+			type Agg_tplantsArray []Agg_tplants
 
 		func (src *Agg_tplantsArray) AssignTo(dst interface{}) error {
 

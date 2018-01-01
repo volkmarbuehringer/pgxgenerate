@@ -1,6 +1,7 @@
 package gener
-import "pgxgenerate/pgtools/db"
-		const TlocationName="tlocation" 
+			import "pgxgenerate/pgtools/db"
+			
+			const TlocationName="tlocation" 
 
 
 type Tlocation struct{

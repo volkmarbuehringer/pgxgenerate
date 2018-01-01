@@ -6,21 +6,6 @@ import (
 	"strings"
 )
 
-func writeHeader(w io.Writer, flag bool) {
-	if flag {
-		fmt.Fprintln(w,
-			`package generprep
-			import 	"fmt"
-import 	"github.com/jackc/pgx/pgtype"
-import 	"github.com/jackc/pgx"
- `)
-	} else {
-		fmt.Fprintf(w, "package gener\n")
-	}
-	fmt.Fprintf(w, `import %q
-		`, importDB)
-}
-
 func writeMethoden(w io.Writer, name string) {
 
 	fmt.Fprintf(w, `

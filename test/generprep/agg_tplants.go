@@ -1,10 +1,10 @@
 package generprep
+			import "pgxgenerate/pgtools/db"
 			import 	"fmt"
-import 	"github.com/jackc/pgx/pgtype"
-import 	"github.com/jackc/pgx"
- 
-import "pgxgenerate/pgtools/db"
-		const Agg_tplantsName="agg_tplants" 
+			import 	"github.com/jackc/pgx/pgtype"
+			import 	"github.com/jackc/pgx"
+						
+			const Agg_tplantsName="agg_tplants" 
 
 
 type Agg_tplants struct{

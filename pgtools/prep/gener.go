@@ -2,6 +2,8 @@ package prep
 
 import (
 	"fmt"
+	"path/filepath"
+	"strings"
 
 	"pgxgenerate/pgtools/writer"
 
@@ -18,7 +20,8 @@ type prepTyp struct {
 	boid   pgtype.OID
 }
 
-func Gener(dirname string, prepStmt *map[string]*pgx.PreparedStatement) error {
+func Gener(dir string, importer string, prepStmt *map[string]*pgx.PreparedStatement) error {
+	var dirname = filepath.Join(dir, importer)
 	fmt.Println("starte generierung phase1")
 	f := writer.Init(dirname)
 	if w, err := f.Create("initfunc1.go"); err != nil {
@@ -27,17 +30,21 @@ func Gener(dirname string, prepStmt *map[string]*pgx.PreparedStatement) error {
 
 		defer f.Close()
 
-		fmt.Fprintf(w, `package gener
-
-		import %q
-
-			`, importDB)
+		writeHeader(w, "")
 
 		fmt.Fprintf(w, "func init(){\n\n")
 
 		for k, stmt := range *prepStmt {
 
-			if err := writeStruct(k, writer.Init(dirname), false, stmt.FieldDescriptions, "", ""); err != nil {
+			var x string
+			for _, field := range stmt.FieldDescriptions {
+				if strings.Contains(field.DataTypeName, "generprep.") {
+					x = fmt.Sprintf(`import 	%q
+								`, importer+"prep")
+					break
+				}
+			}
+			if err := writeStruct(k, writer.Init(dirname), false, stmt.FieldDescriptions, "", "", x); err != nil {
 				return errors.Wrapf(err, "fehler gen bei %s", k)
 			}
 			writeInit1(w, k, stmt.SQL)
