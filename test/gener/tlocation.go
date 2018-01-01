@@ -57,13 +57,13 @@ var TlocationColumns=[]string{
 }
 type TlocationArray []Tlocation
 
-				func (x *TlocationArray) Scanner() []interface{} {
-					*x = append(*x, Tlocation{})
+	func (x *TlocationArray) Scanner() []interface{} {
+		*x = append(*x, Tlocation{})
 
-					return (*x)[len(*x)-1].Scanner()
-				}
+		return (*x)[len(*x)-1].Scanner()
+	}
 
-		func (x *Tlocation) Scanner() []interface {}  {
+func (x *Tlocation) Scanner() []interface {}  {
  return []interface {} {
 &x.Fulocno,
 &x.Fuservicestatid,

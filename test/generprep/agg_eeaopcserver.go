@@ -1,9 +1,11 @@
 package generprep
 			import "pgxgenerate/pgtools/db"
-			import 	"fmt"
-			import 	"github.com/jackc/pgx/pgtype"
-			import 	"github.com/jackc/pgx"
-						
+			import (
+	"fmt"
+	"github.com/jackc/pgx/pgtype"
+  "github.com/jackc/pgx"
+)
+		
 			const Agg_eeaopcserverName="agg_eeaopcserver" 
 
 
@@ -44,40 +46,40 @@ func (x *Agg_eeaopcserver) Scanner() []pgtype.BinaryDecoder  {
 }
 }
 
-	func (src *Agg_eeaopcserver) AssignTo(dst interface{}) error {
-		if src != nil {
-			ttt, ok := dst.(*Agg_eeaopcserver)
-			if !ok {
-					return fmt.Errorf("cannot assig Agg_eeaopcserver ")
-			}
-			*ttt = *src
+func (src *Agg_eeaopcserver) AssignTo(dst interface{}) error {
+	if src != nil {
+		ttt, ok := dst.(*Agg_eeaopcserver)
+		if !ok {
+				return fmt.Errorf("cannot assig Agg_eeaopcserver ")
 		}
-		return nil
+		*ttt = *src
+	}
+	return nil
+}
+
+func (dst *Agg_eeaopcserver) Set(src interface{}) error {
+	return fmt.Errorf("cannot convert to Agg_eeaopcserver")
+}
+
+func (dst *Agg_eeaopcserver) Get() interface{} {
+return dst
+}
+
+func (dst *Agg_eeaopcserver) DecodeBinary(ci *pgtype.ConnInfo, src []byte) error {
+	if src == nil {
+			return nil
 	}
 
-	func (dst *Agg_eeaopcserver) Set(src interface{}) error {
-		return fmt.Errorf("cannot convert to Agg_eeaopcserver")
+	struT := new(Agg_eeaopcserver)
+	if	err := db.DecodeBinary(ci,struT.Scanner(),src);err != nil {
+		return err
 	}
+		*dst = *struT
 
-	func (dst *Agg_eeaopcserver) Get() interface{} {
-	return dst
-	}
+	return nil
+}
 
-	func (dst *Agg_eeaopcserver) DecodeBinary(ci *pgtype.ConnInfo, src []byte) error {
-		if src == nil {
-				return nil
-		}
 
-		struT := new(Agg_eeaopcserver)
-		if	err := db.DecodeBinary(ci,struT.Scanner(),src);err != nil {
-			return err
-		}
-			*dst = *struT
-
-		return nil
-	}
-
-	
 		func init(){
 
 db.InitOIDMap["Agg_eeaopcserver"]=func(con *pgx.Conn){

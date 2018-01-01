@@ -19,13 +19,13 @@ var Test0Columns=[]string{
 }
 type Test0Array []Test0
 
-				func (x *Test0Array) Scanner() []interface{} {
-					*x = append(*x, Test0{})
+	func (x *Test0Array) Scanner() []interface{} {
+		*x = append(*x, Test0{})
 
-					return (*x)[len(*x)-1].Scanner()
-				}
+		return (*x)[len(*x)-1].Scanner()
+	}
 
-		func (x *Test0) Scanner() []interface {}  {
+func (x *Test0) Scanner() []interface {}  {
  return []interface {} {
 &x.Opc_tcptim,
 &x.Opc_preverror,

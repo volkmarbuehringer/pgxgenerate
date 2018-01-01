@@ -49,13 +49,13 @@ var TestinsrReturnColumns=[]string{
 }
 type TestinsrReturnArray []TestinsrReturn
 
-				func (x *TestinsrReturnArray) Scanner() []interface{} {
-					*x = append(*x, TestinsrReturn{})
+	func (x *TestinsrReturnArray) Scanner() []interface{} {
+		*x = append(*x, TestinsrReturn{})
 
-					return (*x)[len(*x)-1].Scanner()
-				}
+		return (*x)[len(*x)-1].Scanner()
+	}
 
-		func (x *TestinsrReturn) Scanner() []interface {}  {
+func (x *TestinsrReturn) Scanner() []interface {}  {
  return []interface {} {
 &x.Opc_id,
 &x.Opc_name,

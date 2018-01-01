@@ -37,13 +37,13 @@ var InsplantColumns=[]string{
 }
 type InsplantArray []Insplant
 
-				func (x *InsplantArray) Scanner() []interface{} {
-					*x = append(*x, Insplant{})
+	func (x *InsplantArray) Scanner() []interface{} {
+		*x = append(*x, Insplant{})
 
-					return (*x)[len(*x)-1].Scanner()
-				}
+		return (*x)[len(*x)-1].Scanner()
+	}
 
-		func (x *Insplant) Scanner() []interface {}  {
+func (x *Insplant) Scanner() []interface {}  {
  return []interface {} {
 &x.Fuplantid,
 &x.Fulocno,

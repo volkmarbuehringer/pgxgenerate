@@ -10,6 +10,26 @@ import (
 	"pgxgenerate/pgtools/writer"
 )
 
+func writeArrayCode(name string, f *writer.Writer, bname string, schema string) error {
+
+	if w, err := f.Create(name + "array.go"); err != nil {
+		return err
+	} else {
+
+		defer f.Close()
+
+		writeHeader(w, importheader)
+		fmt.Fprintf(w, pgxarraymethoden, strings.Title(name))
+
+		writeInit(w, name+"Array", bname, schema)
+
+		if err := w.Flush(); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 func writeStruct(name string, f *writer.Writer, flag bool, fields []pgx.FieldDescription, aname string, schema string, ext string) error {
 
 	if w, err := f.Create(name + ".go"); err != nil {
@@ -24,14 +44,16 @@ func writeStruct(name string, f *writer.Writer, flag bool, fields []pgx.FieldDes
 
 		for _, field := range fields {
 			fmt.Println(field)
-			var ftyp string
-			if field.DataTypeName[0:1] == "_" {
-				ftyp = db.TypCon(field.DataTypeName[1:]) + "Array"
-			} else {
-				ftyp = db.TypCon(field.DataTypeName)
+
+			var helper = func() string {
+				if field.DataTypeName[0:1] == "_" {
+					return db.TypCon(field.DataTypeName[1:]) + "Array"
+				} else {
+					return db.TypCon(field.DataTypeName)
+				}
 			}
 
-			fmt.Fprintf(w, "%s %s `json:%q`\n", strings.Title(field.Name), ftyp, field.Name)
+			fmt.Fprintf(w, "%s %s `json:%q`\n", strings.Title(field.Name), helper(), field.Name)
 
 		}
 		fmt.Fprintln(w, "}")
@@ -45,29 +67,16 @@ func writeStruct(name string, f *writer.Writer, flag bool, fields []pgx.FieldDes
 		}
 		fmt.Fprintln(w, "}")
 
-		if !flag {
-			fmt.Fprintf(w, `type %[1]sArray []%[1]s
-
-				func (x *%[1]sArray) Scanner() []interface{} {
-					*x = append(*x, %[1]s{})
-
-					return (*x)[len(*x)-1].Scanner()
-				}
-
-		`, strings.Title(name))
-
+		var helper = func() string {
+			if flag {
+				return "[]pgtype.BinaryDecoder"
+			} else {
+				fmt.Fprintf(w, pgxscanner, strings.Title(name))
+				return "[]interface {}"
+			}
 		}
 
-		/*
-
-		 */
-		var typer string
-		if flag {
-			typer = "[]pgtype.BinaryDecoder"
-		} else {
-			typer = "[]interface {}"
-		}
-		fmt.Fprintf(w, "func (x *%[1]s) Scanner() %[2]s  {\n return %[2]s {\n", strings.Title(name), typer)
+		fmt.Fprintf(w, "func (x *%[1]s) Scanner() %[2]s  {\n return %[2]s {\n", strings.Title(name), helper())
 
 		for _, field := range fields {
 
@@ -76,7 +85,7 @@ func writeStruct(name string, f *writer.Writer, flag bool, fields []pgx.FieldDes
 		fmt.Fprintf(w, "}\n}\n")
 
 		if flag {
-			writeMethoden(w, name)
+			fmt.Fprintf(w, pgxmethoden, strings.Title(name))
 
 			writeInit(w, name, aname, schema)
 

@@ -1,9 +1,11 @@
 package generprep
 			import "pgxgenerate/pgtools/db"
-			import 	"fmt"
-			import 	"github.com/jackc/pgx/pgtype"
-			import 	"github.com/jackc/pgx"
-						
+			import (
+	"fmt"
+	"github.com/jackc/pgx/pgtype"
+  "github.com/jackc/pgx"
+)
+		
 			const Agg_tplantsName="agg_tplants" 
 
 
@@ -56,40 +58,40 @@ func (x *Agg_tplants) Scanner() []pgtype.BinaryDecoder  {
 }
 }
 
-	func (src *Agg_tplants) AssignTo(dst interface{}) error {
-		if src != nil {
-			ttt, ok := dst.(*Agg_tplants)
-			if !ok {
-					return fmt.Errorf("cannot assig Agg_tplants ")
-			}
-			*ttt = *src
+func (src *Agg_tplants) AssignTo(dst interface{}) error {
+	if src != nil {
+		ttt, ok := dst.(*Agg_tplants)
+		if !ok {
+				return fmt.Errorf("cannot assig Agg_tplants ")
 		}
-		return nil
+		*ttt = *src
+	}
+	return nil
+}
+
+func (dst *Agg_tplants) Set(src interface{}) error {
+	return fmt.Errorf("cannot convert to Agg_tplants")
+}
+
+func (dst *Agg_tplants) Get() interface{} {
+return dst
+}
+
+func (dst *Agg_tplants) DecodeBinary(ci *pgtype.ConnInfo, src []byte) error {
+	if src == nil {
+			return nil
 	}
 
-	func (dst *Agg_tplants) Set(src interface{}) error {
-		return fmt.Errorf("cannot convert to Agg_tplants")
+	struT := new(Agg_tplants)
+	if	err := db.DecodeBinary(ci,struT.Scanner(),src);err != nil {
+		return err
 	}
+		*dst = *struT
 
-	func (dst *Agg_tplants) Get() interface{} {
-	return dst
-	}
+	return nil
+}
 
-	func (dst *Agg_tplants) DecodeBinary(ci *pgtype.ConnInfo, src []byte) error {
-		if src == nil {
-				return nil
-		}
 
-		struT := new(Agg_tplants)
-		if	err := db.DecodeBinary(ci,struT.Scanner(),src);err != nil {
-			return err
-		}
-			*dst = *struT
-
-		return nil
-	}
-
-	
 		func init(){
 
 db.InitOIDMap["Agg_tplants"]=func(con *pgx.Conn){

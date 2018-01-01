@@ -17,22 +17,6 @@ func writeInit1(w io.Writer, name string, prepSql string) {
 
 }
 
-func writeInitArray(w io.Writer, name, bname string, schema string) {
-
-	fmt.Fprintf(w, `
-		func init(){
-
-db.InitOIDMap["%[1]sArray"]=func(con *pgx.Conn){
-db.Register(con , &%[1]sArray{},"%[1]sArray",%[2]q,%[3]q )
-}
-
-
-	}
-
-	`, strings.Title(name), bname, schema)
-
-}
-
 func writeInit(w io.Writer, name, aname string, schema string) {
 
 	fmt.Fprintf(w, `

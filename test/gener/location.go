@@ -60,13 +60,13 @@ var LocationColumns=[]string{
 }
 type LocationArray []Location
 
-				func (x *LocationArray) Scanner() []interface{} {
-					*x = append(*x, Location{})
+	func (x *LocationArray) Scanner() []interface{} {
+		*x = append(*x, Location{})
 
-					return (*x)[len(*x)-1].Scanner()
-				}
+		return (*x)[len(*x)-1].Scanner()
+	}
 
-		func (x *Location) Scanner() []interface {}  {
+func (x *Location) Scanner() []interface {}  {
  return []interface {} {
 &x.Fulocno,
 &x.Fuservicestatid,

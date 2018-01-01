@@ -58,13 +58,13 @@ var BoreasColumns=[]string{
 }
 type BoreasArray []Boreas
 
-				func (x *BoreasArray) Scanner() []interface{} {
-					*x = append(*x, Boreas{})
+	func (x *BoreasArray) Scanner() []interface{} {
+		*x = append(*x, Boreas{})
 
-					return (*x)[len(*x)-1].Scanner()
-				}
+		return (*x)[len(*x)-1].Scanner()
+	}
 
-		func (x *Boreas) Scanner() []interface {}  {
+func (x *Boreas) Scanner() []interface {}  {
  return []interface {} {
 &x.Opc_id,
 &x.Opc_name,

@@ -44,10 +44,7 @@ func GenerPrep(dir string, importer string, prepTypes *map[string]prepTyp) error
 
 				return fmt.Errorf("fehler bei prepare %s %s", t.schema, k)
 			} else {
-				if err := writeStruct(k, writer.Init(dirname), true, stmt.FieldDescriptions, t.aname, t.schema, `import 	"fmt"
-			import 	"github.com/jackc/pgx/pgtype"
-			import 	"github.com/jackc/pgx"
-						`); err != nil {
+				if err := writeStruct(k, writer.Init(dirname), true, stmt.FieldDescriptions, t.aname, t.schema, importheader); err != nil {
 
 					return errors.Wrapf(err, "fehler gen bei %s", k)
 				}

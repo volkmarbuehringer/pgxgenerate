@@ -49,13 +49,13 @@ var Test1Columns=[]string{
 }
 type Test1Array []Test1
 
-				func (x *Test1Array) Scanner() []interface{} {
-					*x = append(*x, Test1{})
+	func (x *Test1Array) Scanner() []interface{} {
+		*x = append(*x, Test1{})
 
-					return (*x)[len(*x)-1].Scanner()
-				}
+		return (*x)[len(*x)-1].Scanner()
+	}
 
-		func (x *Test1) Scanner() []interface {}  {
+func (x *Test1) Scanner() []interface {}  {
  return []interface {} {
 &x.Opc_id,
 &x.Opc_name,

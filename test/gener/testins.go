@@ -17,13 +17,13 @@ var TestinsColumns=[]string{
 }
 type TestinsArray []Testins
 
-				func (x *TestinsArray) Scanner() []interface{} {
-					*x = append(*x, Testins{})
+	func (x *TestinsArray) Scanner() []interface{} {
+		*x = append(*x, Testins{})
 
-					return (*x)[len(*x)-1].Scanner()
-				}
+		return (*x)[len(*x)-1].Scanner()
+	}
 
-		func (x *Testins) Scanner() []interface {}  {
+func (x *Testins) Scanner() []interface {}  {
  return []interface {} {
 &x.Opc_name,
 &x.Opc_uri,

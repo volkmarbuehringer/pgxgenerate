@@ -1,9 +1,11 @@
 package generprep
 			import "pgxgenerate/pgtools/db"
-			import 	"fmt"
-			import 	"github.com/jackc/pgx/pgtype"
-			import 	"github.com/jackc/pgx"
-						
+			import (
+	"fmt"
+	"github.com/jackc/pgx/pgtype"
+  "github.com/jackc/pgx"
+)
+		
 			const Agg_steuerungseinheitName="agg_steuerungseinheit" 
 
 
@@ -41,40 +43,40 @@ func (x *Agg_steuerungseinheit) Scanner() []pgtype.BinaryDecoder  {
 }
 }
 
-	func (src *Agg_steuerungseinheit) AssignTo(dst interface{}) error {
-		if src != nil {
-			ttt, ok := dst.(*Agg_steuerungseinheit)
-			if !ok {
-					return fmt.Errorf("cannot assig Agg_steuerungseinheit ")
-			}
-			*ttt = *src
+func (src *Agg_steuerungseinheit) AssignTo(dst interface{}) error {
+	if src != nil {
+		ttt, ok := dst.(*Agg_steuerungseinheit)
+		if !ok {
+				return fmt.Errorf("cannot assig Agg_steuerungseinheit ")
 		}
-		return nil
+		*ttt = *src
+	}
+	return nil
+}
+
+func (dst *Agg_steuerungseinheit) Set(src interface{}) error {
+	return fmt.Errorf("cannot convert to Agg_steuerungseinheit")
+}
+
+func (dst *Agg_steuerungseinheit) Get() interface{} {
+return dst
+}
+
+func (dst *Agg_steuerungseinheit) DecodeBinary(ci *pgtype.ConnInfo, src []byte) error {
+	if src == nil {
+			return nil
 	}
 
-	func (dst *Agg_steuerungseinheit) Set(src interface{}) error {
-		return fmt.Errorf("cannot convert to Agg_steuerungseinheit")
+	struT := new(Agg_steuerungseinheit)
+	if	err := db.DecodeBinary(ci,struT.Scanner(),src);err != nil {
+		return err
 	}
+		*dst = *struT
 
-	func (dst *Agg_steuerungseinheit) Get() interface{} {
-	return dst
-	}
+	return nil
+}
 
-	func (dst *Agg_steuerungseinheit) DecodeBinary(ci *pgtype.ConnInfo, src []byte) error {
-		if src == nil {
-				return nil
-		}
 
-		struT := new(Agg_steuerungseinheit)
-		if	err := db.DecodeBinary(ci,struT.Scanner(),src);err != nil {
-			return err
-		}
-			*dst = *struT
-
-		return nil
-	}
-
-	
 		func init(){
 
 db.InitOIDMap["Agg_steuerungseinheit"]=func(con *pgx.Conn){
