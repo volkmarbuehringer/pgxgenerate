@@ -97,6 +97,8 @@ func (dst *Agg_tplants) DecodeBinary(ci *pgtype.ConnInfo, src []byte) error {
 db.InitOIDMap["Agg_tplants"]=func(con *pgx.Conn){
 db.Register(con , &Agg_tplants{},"Agg_tplants", "agg_tplants" ,"sdbms")
 }
-	}
+db.CheckerCalls=append(db.CheckerCalls,func(con *pgx.Conn)error{
+return db.Checkaggview(con , "agg_tplants", "sdbms" ,Agg_tplantsColumns)
+})
 
-	
+}	

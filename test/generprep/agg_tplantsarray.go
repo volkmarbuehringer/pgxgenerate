@@ -56,6 +56,5 @@ func (dst *Agg_tplantsArray) Get() interface{} {
 db.InitOIDMap["Agg_tplantsArray"]=func(con *pgx.Conn){
 db.Register(con , &Agg_tplantsArray{},"Agg_tplantsArray", "_agg_tplants" ,"sdbms")
 }
-	}
 
-	
+}	

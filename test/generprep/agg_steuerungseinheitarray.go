@@ -56,6 +56,5 @@ func (dst *Agg_steuerungseinheitArray) Get() interface{} {
 db.InitOIDMap["Agg_steuerungseinheitArray"]=func(con *pgx.Conn){
 db.Register(con , &Agg_steuerungseinheitArray{},"Agg_steuerungseinheitArray", "_agg_steuerungseinheit" ,"eeacollector")
 }
-	}
 
-	
+}	

@@ -85,6 +85,8 @@ func (dst *Agg_eeaopcserver) DecodeBinary(ci *pgtype.ConnInfo, src []byte) error
 db.InitOIDMap["Agg_eeaopcserver"]=func(con *pgx.Conn){
 db.Register(con , &Agg_eeaopcserver{},"Agg_eeaopcserver", "agg_eeaopcserver" ,"eeacollector")
 }
-	}
+db.CheckerCalls=append(db.CheckerCalls,func(con *pgx.Conn)error{
+return db.Checkaggview(con , "agg_eeaopcserver", "eeacollector" ,Agg_eeaopcserverColumns)
+})
 
-	
+}	

@@ -83,3 +83,31 @@ func CheckOIDs(con *pgx.Conn, namen []string, binder []pgtype.OID) ([]pgx.FieldD
 	}
 	return liste, nil
 }
+
+func Checkaggview(con *pgx.Conn, table string, schema string, columns []string) error {
+	if rows, err := con.Query(`select attname,atttypid from pg_attribute
+WHERE  attrelid = $1::regclass  -- table name, optionally schema-qualified
+AND    attnum > 0
+AND    NOT attisdropped
+ORDER  BY attnum`, schema+"."+table); err != nil {
+		return err
+	} else {
+		var pos int
+		for rows.Next() {
+			var name string
+			var typ int
+
+			if err := rows.Scan(&name, &typ); err != nil {
+				return err
+			}
+			if columns[pos] != name {
+				return fmt.Errorf("falscher spaltename %s %s %s:%s %d", table, schema, name, columns[pos], pos)
+			}
+			pos++
+		}
+		if len(columns) != pos {
+			return fmt.Errorf("falsche anzahl spalten%s:%s %d", schema, table, pos)
+		}
+	}
+	return nil
+}

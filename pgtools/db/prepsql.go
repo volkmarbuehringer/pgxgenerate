@@ -15,6 +15,7 @@ var InitOIDMap = map[string]func(con *pgx.Conn){}
 
 var InitScanMap = map[string]func() ([]interface{}, interface{}, []string){}
 var PreqSQLMap = map[string]string{}
+var CheckerCalls = []func(*pgx.Conn) error{}
 
 func Register(con *pgx.Conn, stru pgtype.Value, name string, typname string, schema string) {
 
@@ -101,6 +102,11 @@ func Prep() error {
 	}
 	defer con.Close()
 
+	for _, x := range CheckerCalls {
+		if err := x(con); err != nil {
+			return err
+		}
+	}
 	for k, x := range PreqSQLMap {
 
 		if stmt, err := pool.Prepare(k, x); err != nil {

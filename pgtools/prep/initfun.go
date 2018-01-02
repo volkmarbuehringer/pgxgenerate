@@ -19,14 +19,21 @@ func writeInit1(w io.Writer, name string, prepSql string) {
 
 func writeInit(w io.Writer, name, aname string, schema string) {
 
+	var zus string
+
+	if !strings.HasSuffix(name, "Array") {
+		zus = `
+db.CheckerCalls=append(db.CheckerCalls,func(con *pgx.Conn)error{
+return db.Checkaggview(con , %[2]q, %[3]q ,%[1]sColumns)
+})`
+	}
 	fmt.Fprintf(w, `
 		func init(){
 
 db.InitOIDMap[%[1]q]=func(con *pgx.Conn){
 db.Register(con , &%[1]s{},%[1]q, %[2]q ,%[3]q)
-}
-	}
+}`+zus+`
 
-	`, strings.Title(name), aname, schema)
+}	`, strings.Title(name), aname, schema)
 
 }
