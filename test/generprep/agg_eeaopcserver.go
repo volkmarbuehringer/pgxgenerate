@@ -85,8 +85,17 @@ func (dst *Agg_eeaopcserver) DecodeBinary(ci *pgtype.ConnInfo, src []byte) error
 db.InitOIDMap["Agg_eeaopcserver"]=func(con *pgx.Conn){
 db.Register(con , &Agg_eeaopcserver{},"Agg_eeaopcserver", "agg_eeaopcserver" ,"eeacollector")
 }
-db.CheckerCalls=append(db.CheckerCalls,func(con *pgx.Conn)error{
-return db.Checkaggview(con , "agg_eeaopcserver", "eeacollector" ,Agg_eeaopcserverColumns)
-})
+	   db.CheckerCalls=append(db.CheckerCalls,func(con *pgx.Conn)error{
+	   	var x Agg_eeaopcserver
+	   return db.Checkaggview(con , "agg_eeaopcserver", "eeacollector" ,Agg_eeaopcserverColumns, []interface {} {&x.Eea_opcid,
+&x.Eea_sernr,
+&x.Eea_plantnr,
+&x.Eea_typnr,
+&x.Eea_typstr,
+&x.Eea_hersteller,
+&x.Eea_nennleistung,
+&x.Eea_anzminuten,
+&x.Eea_aktiv})
+	   })
 
 }	

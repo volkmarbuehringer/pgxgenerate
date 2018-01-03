@@ -112,7 +112,7 @@ func CheckSQL(x string) []string {
 				erg[idx] = erg[idx][:pos]
 			}
 		}
-		fmt.Println("updere", maxer, erg)
+		//		fmt.Println("updere", maxer, erg)
 		return erg
 	}
 

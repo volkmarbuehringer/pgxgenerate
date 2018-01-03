@@ -36,7 +36,13 @@ func (v Bool) MarshalJSON() ([]byte, error) {
 
 type BoolArray = pgtype.BoolArray
 
-type Bytea = pgtype.Bytea
+type Bytea struct {
+	pgtype.Bytea
+}
+
+func (v *Bytea) Stringer() string {
+	return ""
+}
 
 type ByteaArray = pgtype.ByteaArray
 

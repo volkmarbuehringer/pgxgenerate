@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"io"
 	"strings"
+
+	"github.com/jackc/pgx"
 )
 
 func writeInit1(w io.Writer, name string, prepSql string) {
@@ -17,16 +19,23 @@ func writeInit1(w io.Writer, name string, prepSql string) {
 
 }
 
-func writeInit(w io.Writer, name, aname string, schema string) {
+func writeInit(w io.Writer, name, aname string, schema string, fields []pgx.FieldDescription) {
 
 	var zus string
 
-	if !strings.HasSuffix(name, "Array") {
+	if len(fields) > 0 {
+		helper := make([]string, 0, len(fields))
+		for _, field := range fields {
+			helper = append(helper, fmt.Sprintf("&x.%s", strings.Title(field.Name)))
+		}
 		zus = `
-db.CheckerCalls=append(db.CheckerCalls,func(con *pgx.Conn)error{
-return db.Checkaggview(con , %[2]q, %[3]q ,%[1]sColumns)
-})`
+	   db.CheckerCalls=append(db.CheckerCalls,func(con *pgx.Conn)error{
+	   	var x %[1]s
+	   return db.Checkaggview(con , %[2]q, %[3]q ,%[1]sColumns, []interface {} {` +
+			strings.Join(helper, ",\n") + `})
+	   })`
 	}
+
 	fmt.Fprintf(w, `
 		func init(){
 

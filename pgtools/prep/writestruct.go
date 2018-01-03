@@ -21,7 +21,7 @@ func writeArrayCode(name string, f *writer.Writer, bname string, schema string) 
 		writeHeader(w, importheader)
 		fmt.Fprintf(w, pgxarraymethoden, strings.Title(name))
 
-		writeInit(w, name+"Array", bname, schema)
+		writeInit(w, name+"Array", bname, schema, []pgx.FieldDescription{})
 
 		if err := w.Flush(); err != nil {
 			return err
@@ -87,7 +87,7 @@ func writeStruct(name string, f *writer.Writer, flag bool, fields []pgx.FieldDes
 		if flag {
 			fmt.Fprintf(w, pgxmethoden, strings.Title(name))
 
-			writeInit(w, name, aname, schema)
+			writeInit(w, name, aname, schema, fields)
 
 		} else {
 			fmt.Fprintf(w, "\nfunc (x *%s)String()[]string{\nreturn []string{\n", strings.Title(name))

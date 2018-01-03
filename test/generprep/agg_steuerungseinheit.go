@@ -82,8 +82,16 @@ func (dst *Agg_steuerungseinheit) DecodeBinary(ci *pgtype.ConnInfo, src []byte) 
 db.InitOIDMap["Agg_steuerungseinheit"]=func(con *pgx.Conn){
 db.Register(con , &Agg_steuerungseinheit{},"Agg_steuerungseinheit", "agg_steuerungseinheit" ,"eeacollector")
 }
-db.CheckerCalls=append(db.CheckerCalls,func(con *pgx.Conn)error{
-return db.Checkaggview(con , "agg_steuerungseinheit", "eeacollector" ,Agg_steuerungseinheitColumns)
-})
+	   db.CheckerCalls=append(db.CheckerCalls,func(con *pgx.Conn)error{
+	   	var x Agg_steuerungseinheit
+	   return db.Checkaggview(con , "agg_steuerungseinheit", "eeacollector" ,Agg_steuerungseinheitColumns, []interface {} {&x.Str_id,
+&x.Str_opcid,
+&x.Str_plantnr,
+&x.Str_typstr,
+&x.Str_sernr,
+&x.Str_crdate,
+&x.Str_upddate,
+&x.Str_aktiv})
+	   })
 
 }	

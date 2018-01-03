@@ -102,11 +102,23 @@ func Prep() error {
 	}
 	defer con.Close()
 
+	if _, err := con.Prepare("xxxaggviewxxx", `select attname, typname
+	from pg_attribute
+	inner join pg_type t on oid = atttypid
+	WHERE  attrelid = $1::regclass  -- table name, optionally schema-qualified
+	AND    attnum > 0
+	AND    NOT attisdropped
+	ORDER  BY attnum`); err != nil {
+		return err
+	}
+
+	fmt.Println("prüfen aggregate:", len(CheckerCalls))
 	for _, x := range CheckerCalls {
 		if err := x(con); err != nil {
 			return err
 		}
 	}
+	fmt.Println("prüfen sql:", len(PreqSQLMap))
 	for k, x := range PreqSQLMap {
 
 		if stmt, err := pool.Prepare(k, x); err != nil {

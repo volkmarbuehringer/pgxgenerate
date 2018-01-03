@@ -84,24 +84,28 @@ func CheckOIDs(con *pgx.Conn, namen []string, binder []pgtype.OID) ([]pgx.FieldD
 	return liste, nil
 }
 
-func Checkaggview(con *pgx.Conn, table string, schema string, columns []string) error {
-	if rows, err := con.Query(`select attname,atttypid from pg_attribute
-WHERE  attrelid = $1::regclass  -- table name, optionally schema-qualified
-AND    attnum > 0
-AND    NOT attisdropped
-ORDER  BY attnum`, schema+"."+table); err != nil {
+func Checkaggview(con *pgx.Conn, table string, schema string, columns []string, intertypes []interface{}) error {
+	if rows, err := con.Query("xxxaggviewxxx", schema+"."+table); err != nil {
 		return err
 	} else {
 		var pos int
+		defer rows.Close()
 		for rows.Next() {
 			var name string
-			var typ int
+			var typ string
 
 			if err := rows.Scan(&name, &typ); err != nil {
 				return err
 			}
+			if len(columns) <= pos {
+				return fmt.Errorf("falsche anzahl spalten%s:%s %d", schema, table, pos)
+			}
 			if columns[pos] != name {
 				return fmt.Errorf("falscher spaltename %s %s %s:%s %d", table, schema, name, columns[pos], pos)
+			}
+			typnamei := strings.Replace(fmt.Sprintf("%T", intertypes[pos]), "*", "", 1)
+			if typnamei != "db."+strings.Title(typ) {
+				return fmt.Errorf("falscher spaltentyp %s %s %s<> %s", table, columns[pos], typnamei, typ)
 			}
 			pos++
 		}
