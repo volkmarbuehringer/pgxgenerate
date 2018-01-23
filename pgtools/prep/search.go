@@ -5,7 +5,7 @@ import (
 	"github.com/jackc/pgx/pgtype"
 	"github.com/pkg/errors"
 
-	"pgxgenerate/pgtools/db"
+	"prounix.de/pgtools/db"
 )
 
 func search(con *pgx.Conn, oid pgtype.OID, name string, prepTypes *map[string]prepTyp, schema string) error {

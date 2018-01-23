@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"pgxgenerate/pgtools/writer"
+	"prounix.de/pgtools/writer"
 
 	"github.com/jackc/pgx"
 	"github.com/jackc/pgx/pgtype"
@@ -32,7 +32,7 @@ func Gener(dir string, importer string, prepStmt *map[string]*pgx.PreparedStatem
 
 		writeHeader(w, "")
 
-		fmt.Fprintf(w, "func init(){\n\n")
+		fmt.Fprintf(w, "func init(){\n\ndb.SQLListe=[]db.SQLInter{")
 
 		for k, stmt := range *prepStmt {
 
@@ -44,12 +44,12 @@ func Gener(dir string, importer string, prepStmt *map[string]*pgx.PreparedStatem
 					break
 				}
 			}
-			if err := writeStruct(k, writer.Init(dirname), false, stmt.FieldDescriptions, "", "", x); err != nil {
+			if err := writeStruct(k, writer.Init(dirname), false, stmt.FieldDescriptions, "", "", x, stmt.SQL); err != nil {
 				return errors.Wrapf(err, "fehler gen bei %s", k)
 			}
-			writeInit1(w, k, stmt.SQL)
+			writeInit1(w, k)
 		}
-		fmt.Fprintf(w, "}\n\n")
+		fmt.Fprintf(w, "}}\n\n")
 		if err := w.Flush(); err != nil {
 			return err
 		}

@@ -49,7 +49,7 @@ func (dst *%[1]sArray) Get() interface{} {
 						return func() []pgtype.BinaryDecoder{
 							pos := len(*result)
 							*result = append(*result,%[1]s{})
-							return (*result)[pos].Scanner()
+							return (*result)[pos].Scanner1()
 						}
 					}
 
@@ -89,7 +89,7 @@ func (dst *%[1]s) DecodeBinary(ci *pgtype.ConnInfo, src []byte) error {
 	}
 
 	struT := new(%[1]s)
-	if	err := db.DecodeBinary(ci,struT.Scanner(),src);err != nil {
+	if	err := db.DecodeBinary(ci,struT.Scanner1(),src);err != nil {
 		return err
 	}
 		*dst = *struT

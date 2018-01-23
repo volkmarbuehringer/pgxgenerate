@@ -9,7 +9,7 @@ import (
 	"github.com/jackc/pgx/pgtype"
 	"github.com/pkg/errors"
 
-	"pgxgenerate/pgtools/db"
+	"prounix.de/pgtools/db"
 )
 
 func Prep(prepSql map[string]string, prepTypes *map[string]prepTyp, prepStmt *map[string]*pgx.PreparedStatement) error {
@@ -30,7 +30,6 @@ func Prep(prepSql map[string]string, prepTypes *map[string]prepTyp, prepStmt *ma
 				return errors.Wrapf(err, "prepare")
 
 			} else {
-				stmt.SQL = ""
 				(*prepStmt)[k+"Return"] = stmt
 			}
 
@@ -62,6 +61,23 @@ func Prep(prepSql map[string]string, prepTypes *map[string]prepTyp, prepStmt *ma
 
 			(*prepStmt)[k] = stmt
 		} else {
+			if len(stmt.ParameterOIDs) > 0 {
+				stmt1 := *stmt
+				erg := db.ParseWhere(stmt1.SQL)
+				t := len(stmt1.ParameterOIDs) - len(erg)
+				for i := 0; i < t; i++ {
+					erg = append(erg, "")
+				}
+				if fd, err := db.CheckOIDs(con, erg, stmt1.ParameterOIDs); err != nil {
+					return err
+				} else {
+					stmt1.FieldDescriptions = fd
+					stmt1.SQL = ""
+					(*prepStmt)[k+"Param"] = &stmt1
+
+				}
+
+			}
 			(*prepStmt)[k] = stmt
 		}
 	}

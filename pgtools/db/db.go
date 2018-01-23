@@ -18,7 +18,7 @@ var dbx *pgx.ConnPool
 func GetPool() *pgx.ConnPool {
 	if dbx == nil {
 		initDB()
-		fmt.Println("stat", dbx.Stat())
+		//fmt.Println("stat", dbx.Stat())
 	}
 	return dbx
 }
@@ -26,7 +26,7 @@ func GetPool() *pgx.ConnPool {
 //End schliesst den pool
 func End() {
 	if dbx != nil {
-		fmt.Println("stat", dbx.Stat())
+		//fmt.Println("stat", dbx.Stat())
 		dbx.Close()
 	}
 }

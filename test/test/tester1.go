@@ -9,18 +9,18 @@ import (
 	"golang.org/x/sync/errgroup"
 	"prounix.de/pgtools/writer"
 
-	"pgxgenerate/test/gener"
-	"pgxgenerate/test/generprep"
+	"prounix.de/test/gener"
+	"prounix.de/test/generprep"
 
 	"github.com/jackc/pgx"
 	"github.com/jackc/pgx/pgtype"
 
-	"pgxgenerate/pgtools/db"
+	"prounix.de/pgtools/db"
 )
 
 func test555() {
 	pool := db.GetPool()
-	rows, err := pool.Query(gener.BoreasName)
+	rows, err := pool.Query(new(gener.Boreas).Name())
 	if err != nil {
 		panic(err)
 	}
@@ -292,8 +292,8 @@ func (x *CopyTest1) Err() error {
 
 func test4() {
 	pool := db.GetPool()
-
-	rows, err := pool.Query(gener.LocationName)
+	var d gener.Location
+	rows, err := pool.Query(d.Name())
 	if err != nil {
 		panic(err)
 	}
@@ -311,11 +311,12 @@ func test4() {
 	var ttt1 = CopyTest1{pos: -1, syncer: syncer}
 	fmt.Println("starte copy")
 	start := time.Now()
-
+	var d2 gener.Insplant
+	var d1 gener.Tlocation
 	g.Go(func() error {
 		copyCount, err := tx1.CopyFrom(
 			pgx.Identifier{"gaga"},
-			gener.InsplantColumns,
+			d2.Columns(),
 			pgx.CopyFromSource(&ttt1),
 		)
 		fmt.Println("fe", copyCount, err)
@@ -324,7 +325,7 @@ func test4() {
 	g.Go(func() error {
 		copyCount, err := tx2.CopyFrom(
 			pgx.Identifier{"gaga1"},
-			gener.TlocationColumns,
+			d1.Columns(),
 			pgx.CopyFromSource(&ttt),
 		)
 		fmt.Println(copyCount, err)
@@ -344,7 +345,8 @@ func test4() {
 
 func test3() {
 	pool := db.GetPool()
-	rows, err := pool.Query(gener.LocationName)
+	var d gener.Location
+	rows, err := pool.Query(d.Name())
 	if err != nil {
 		panic(err)
 	}
@@ -398,7 +400,7 @@ func test3() {
 			d.Foserialchanged,
 		}
 		inser.Fuplantid.Int += 7000000
-		batch.Queue(gener.InsplantName, inser.Scanner(), []pgtype.OID{}, []int16{})
+		batch.Queue(inser.Name(), inser.Scanner(), []pgtype.OID{}, []int16{})
 
 	}
 
@@ -436,7 +438,7 @@ func testinsr() {
 	//input.Addtime.Set(time.Now())
 	input.Opc_scadanr.SetInt(3453334)
 	input.Opc_uri.SetVarchar("gagaga")
-	err1 := pool.QueryRow(gener.TestinsrName, input.Scanner()...).Scan(output.Scanner()...)
+	err1 := pool.QueryRow(input.Name(), input.Scanner()...).Scan(output.Scanner()...)
 	if err1 != nil {
 		panic(err1)
 	}
@@ -458,7 +460,7 @@ func testins() {
 		//input.Addtime.Set(time.Now())
 		input.Opc_scadanr.SetInt(int32(i + 1000000))
 		input.Opc_uri.SetVarchar("gagaga")
-		batch.Queue(gener.TestinsName, input.Scanner(), []pgtype.OID{}, []int16{})
+		batch.Queue(input.Name(), input.Scanner(), []pgtype.OID{}, []int16{})
 
 	}
 
@@ -497,7 +499,7 @@ func test0() {
 	input.Opc_preverror.SetText("gagaga")
 	input.Opc_tcptim.SetInt(555)
 
-	cmd, err1 := pool.Exec(gener.Test0Name, input.Scanner()...)
+	cmd, err1 := pool.Exec(input.Name(), input.Scanner()...)
 
 	if err1 != nil {
 		panic(err1)
@@ -507,11 +509,16 @@ func test0() {
 
 func test1() {
 	pool := db.GetPool()
-	rows, err := pool.Query(gener.Test1Name)
+
+	var x gener.Test1
+	var p gener.Test1Param
+	p.Opc_name.SetText("%")
+	p.Opc_scadanr.SetInt(3)
+	p.Opc_aktiv.SetBool(true)
+	rows, err := pool.Query(x.Name(), p.Scanner()...)
 	if err != nil {
 		panic(err)
 	}
-	var x gener.Test1
 
 	f := writer.Init(".")
 

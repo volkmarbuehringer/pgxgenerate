@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"path/filepath"
 
-	"pgxgenerate/pgtools/db"
-	"pgxgenerate/pgtools/writer"
+	"prounix.de/pgtools/db"
+	"prounix.de/pgtools/writer"
 
 	"github.com/pkg/errors"
 )
@@ -44,7 +44,7 @@ func GenerPrep(dir string, importer string, prepTypes *map[string]prepTyp) error
 
 				return fmt.Errorf("fehler bei prepare %s %s", t.schema, k)
 			} else {
-				if err := writeStruct(k, writer.Init(dirname), true, stmt.FieldDescriptions, t.aname, t.schema, importheader); err != nil {
+				if err := writeStruct(k, writer.Init(dirname), true, stmt.FieldDescriptions, t.aname, t.schema, importheader, stmt.SQL); err != nil {
 
 					return errors.Wrapf(err, "fehler gen bei %s", k)
 				}

@@ -1,1 +1,1 @@
-select * from sdbms.tlocation
+select * from sdbms.tlocation 

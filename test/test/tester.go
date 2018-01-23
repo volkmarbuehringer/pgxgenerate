@@ -1,10 +1,10 @@
 package main
 
 import (
-	_ "pgxgenerate/test/gener"
-	_ "pgxgenerate/test/generprep"
+	_ "prounix.de/test/gener"
+	_ "prounix.de/test/generprep"
 
-	"pgxgenerate/pgtools/db"
+	"prounix.de/pgtools/db"
 )
 
 func main() {

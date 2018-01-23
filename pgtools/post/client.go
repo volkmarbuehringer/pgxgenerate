@@ -2,9 +2,11 @@ package post
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"net"
 	"net/http"
+	"net/url"
 	"os"
 	"strconv"
 	"time"
@@ -55,9 +57,19 @@ func init() {
 		httpt = 3000
 	}
 
+	pro, ok := os.LookupEnv("PU_PROXY")
+
+	if !ok {
+		panic(fmt.Errorf("proxy PU_PROXY nicht gesetzt"))
+	}
+	proxyURL, err := url.Parse(pro)
+	if err != nil {
+		panic(err)
+	}
+
 	tr := http.Transport{
 		DisableKeepAlives: true,
-		Proxy:             http.ProxyFromEnvironment,
+		Proxy:             http.ProxyURL(proxyURL), //   http.ProxyFromEnvironment,
 		Dial: (&net.Dialer{
 			Timeout:   time.Duration(conn) * time.Millisecond,
 			KeepAlive: 0,

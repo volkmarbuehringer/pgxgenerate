@@ -6,8 +6,8 @@ import (
 
 	"github.com/jackc/pgx"
 
-	"pgxgenerate/pgtools/db"
-	"pgxgenerate/pgtools/writer"
+	"prounix.de/pgtools/db"
+	"prounix.de/pgtools/writer"
 )
 
 func writeArrayCode(name string, f *writer.Writer, bname string, schema string) error {
@@ -21,7 +21,7 @@ func writeArrayCode(name string, f *writer.Writer, bname string, schema string) 
 		writeHeader(w, importheader)
 		fmt.Fprintf(w, pgxarraymethoden, strings.Title(name))
 
-		writeInit(w, name+"Array", bname, schema, []pgx.FieldDescription{})
+		writeInit2(w, name+"Array", bname, schema)
 
 		if err := w.Flush(); err != nil {
 			return err
@@ -30,7 +30,7 @@ func writeArrayCode(name string, f *writer.Writer, bname string, schema string) 
 	return nil
 }
 
-func writeStruct(name string, f *writer.Writer, flag bool, fields []pgx.FieldDescription, aname string, schema string, ext string) error {
+func writeStruct(name string, f *writer.Writer, flag bool, fields []pgx.FieldDescription, aname string, schema string, ext string, prepSql string) error {
 
 	if w, err := f.Create(name + ".go"); err != nil {
 		return err
@@ -40,7 +40,11 @@ func writeStruct(name string, f *writer.Writer, flag bool, fields []pgx.FieldDes
 
 		writeHeader(w, ext)
 
-		fmt.Fprintf(w, "const %[1]sName=%[2]q \n\n\ntype %[1]s struct{\n", strings.Title(name), name)
+		fmt.Fprintf(w, "func (_ *%[1]s) SQL() string {\n return `%s` }\n\n", strings.Title(name), prepSql)
+
+		fmt.Fprintf(w, "func (_ *%[1]s) Name() string {\n return %[2]q }", strings.Title(name), name)
+
+		fmt.Fprintf(w, "\n\n\ntype %[1]s struct{\n", strings.Title(name))
 
 		for _, field := range fields {
 			fmt.Println(field)
@@ -58,36 +62,37 @@ func writeStruct(name string, f *writer.Writer, flag bool, fields []pgx.FieldDes
 		}
 		fmt.Fprintln(w, "}")
 
-		fmt.Fprintf(w, "\nvar %sColumns=[]string{\n", strings.Title(name))
+		fmt.Fprintf(w, "func (_ *%[1]s) Columns() []string {\n return []string{", strings.Title(name))
 
 		for _, field := range fields {
 
 			fmt.Fprintf(w, "%q,\n", field.Name)
 
 		}
-		fmt.Fprintln(w, "}")
+		fmt.Fprintln(w, "}}")
 
-		var helper = func() string {
-			if flag {
-				return "[]pgtype.BinaryDecoder"
-			} else {
-				fmt.Fprintf(w, pgxscanner, strings.Title(name))
-				return "[]interface {}"
+		var helper = func(namer string, typ string) {
+
+			fmt.Fprintf(w, "func (x *%[1]s) %[3]s() %[2]s  {\n return %[2]s {\n", strings.Title(name), typ, namer)
+
+			for _, field := range fields {
+
+				fmt.Fprintf(w, "&x.%s,\n", strings.Title(field.Name))
 			}
+			fmt.Fprintf(w, "}\n}\n")
 		}
 
-		fmt.Fprintf(w, "func (x *%[1]s) Scanner() %[2]s  {\n return %[2]s {\n", strings.Title(name), helper())
+		if flag {
 
-		for _, field := range fields {
-
-			fmt.Fprintf(w, "&x.%s,\n", strings.Title(field.Name))
+			helper("Scanner1", "[]pgtype.BinaryDecoder")
+		} else {
+			fmt.Fprintf(w, pgxscanner, strings.Title(name))
 		}
-		fmt.Fprintf(w, "}\n}\n")
-
+		helper("Scanner", "[]interface {}")
 		if flag {
 			fmt.Fprintf(w, pgxmethoden, strings.Title(name))
 
-			writeInit(w, name, aname, schema, fields)
+			writeInit(w, name, aname, schema)
 
 		} else {
 			fmt.Fprintf(w, "\nfunc (x *%s)String()[]string{\nreturn []string{\n", strings.Title(name))

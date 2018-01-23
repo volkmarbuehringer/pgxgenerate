@@ -5,7 +5,10 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
+	"strconv"
 	"syscall"
+
+	"github.com/sirupsen/logrus"
 )
 
 var githash string
@@ -22,6 +25,7 @@ func Contexter() (context.Context, func()) {
 		syscall.SIGHUP,
 		syscall.SIGINT,
 		syscall.SIGTERM,
+		syscall.SIGQUIT,
 	)
 
 	go func() {
@@ -38,6 +42,10 @@ func Contexter() (context.Context, func()) {
 				fmt.Println("Warikomi")
 				cancel()
 
+			case syscall.SIGQUIT:
+				fmt.Println("stop and core dump")
+				cancel()
+
 			// kill -SIGTERM XXXX
 			case syscall.SIGTERM:
 				fmt.Println("force stop")
@@ -52,6 +60,27 @@ func Contexter() (context.Context, func()) {
 }
 
 func init() {
+
+	switch os.Getenv("PU_LOGLEVEL") {
+	case "info":
+		logrus.SetLevel(logrus.InfoLevel)
+	case "error":
+		logrus.SetLevel(logrus.ErrorLevel)
+	case "fatal":
+		logrus.SetLevel(logrus.FatalLevel)
+	case "warn":
+		logrus.SetLevel(logrus.WarnLevel)
+	default:
+		logrus.SetLevel(logrus.InfoLevel)
+	}
+
+	if t, ok := os.LookupEnv("PU_DEBUG"); ok {
+		debug, _ := strconv.ParseBool(t)
+		if debug {
+			logrus.SetLevel(logrus.DebugLevel)
+		}
+
+	}
 
 	if len(os.Args) == 2 && os.Args[1] == "--version" {
 		fmt.Println(program, githash, githashtool, buildstamp)

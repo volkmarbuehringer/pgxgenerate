@@ -1,11 +1,77 @@
 package db
 
 import (
-	"fmt"
-	"os"
 	"strconv"
 	"strings"
 )
+
+type parsedat struct {
+	d     []string
+	maxer int
+}
+
+func ParseWhere(sql string) []string {
+	erg := parsedat{make([]string, 20), 0}
+
+	erg.preperg(sql)
+
+	return erg.d
+}
+
+func (erg *parsedat) preperg(sql string) {
+	tt1 := r6.ReplaceAllLiteralString(sql, " ")
+	tt2 := r7.Split(tt1, 100)
+
+	erg.parser(tt2, true)
+	erg.d = erg.d[1 : erg.maxer+1]
+	for idx := range erg.d {
+		pos := strings.Index(erg.d[idx], " ")
+		if pos >= 0 {
+			erg.d[idx] = erg.d[idx][:pos]
+		}
+	}
+}
+
+func (erg *parsedat) parser(ts1 []string, flag bool) {
+
+	for _, f := range ts1 {
+
+		var tok = []string{}
+		if flag {
+			tok = r8.FindStringSubmatch(f)
+			if len(tok) != 3 {
+				tok = r9.FindStringSubmatch(f)
+				if len(tok) == 3 {
+					tok[1], tok[2] = tok[2], tok[1]
+				} else {
+					//		fmt.Println(f, tok)
+					continue
+				}
+			}
+
+		} else {
+			tok = r4.FindStringSubmatch(f)
+		}
+
+		if len(tok) == 3 {
+
+			tt2, err := strconv.Atoi(tok[2])
+			if err != nil {
+
+				panic(err)
+
+			} else {
+				if tt2 > erg.maxer {
+					erg.maxer = tt2
+				}
+				erg.d[tt2] = tok[1]
+			}
+
+		}
+
+	}
+
+}
 
 func CheckSQLReturn(x string) bool {
 	p := r3.FindStringSubmatchIndex(x)
@@ -56,64 +122,12 @@ func CheckSQL(x string) []string {
 
 	} else if len(upd) == 4 {
 
-		erg := make([]string, 100)
-		maxer := 0
+		erg := parsedat{make([]string, 100), 0}
 
-		var parser = func(ts1 []string, flag bool) {
-
-			for _, f := range ts1 {
-
-				var tok = []string{}
-				if flag {
-					tok = r8.FindStringSubmatch(f)
-					if len(tok) != 3 {
-						tok = r9.FindStringSubmatch(f)
-						if len(tok) == 3 {
-							tok[1], tok[2] = tok[2], tok[1]
-						} else {
-							fmt.Println(f, tok)
-							os.Exit(1)
-							continue
-						}
-					}
-
-				} else {
-					tok = r4.FindStringSubmatch(f)
-				}
-
-				if len(tok) == 3 {
-
-					tt2, err := strconv.Atoi(tok[2])
-					if err != nil {
-
-						panic(err)
-
-					} else {
-						if tt2 > maxer {
-							maxer = tt2
-						}
-						erg[tt2] = tok[1]
-					}
-
-				}
-
-			}
-
-		}
-
-		parser(splitter(upd[2]), false)
-		tt1 := r6.ReplaceAllLiteralString(upd[3], " ")
-		tt2 := r7.Split(tt1, 100)
-		parser(tt2, true)
-		erg = erg[1 : maxer+1]
-		for idx := range erg {
-			pos := strings.Index(erg[idx], " ")
-			if pos >= 0 {
-				erg[idx] = erg[idx][:pos]
-			}
-		}
+		erg.parser(splitter(upd[2]), false)
+		erg.preperg(upd[3])
 		//		fmt.Println("updere", maxer, erg)
-		return erg
+		return erg.d
 	}
 
 	return []string{}

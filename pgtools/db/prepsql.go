@@ -7,15 +7,30 @@ import (
 
 	"github.com/jackc/pgx"
 	"github.com/jackc/pgx/pgtype"
+	"github.com/pkg/errors"
 )
 
 var typsql string
 
 var InitOIDMap = map[string]func(con *pgx.Conn){}
 
-var InitScanMap = map[string]func() ([]interface{}, interface{}, []string){}
-var PreqSQLMap = map[string]string{}
-var CheckerCalls = []func(*pgx.Conn) error{}
+type SQLInterB interface {
+	Name() string
+	Columns() []string
+	SQL() string
+}
+type SQLInter interface {
+	SQLInterB
+	Scanner() []interface{}
+}
+
+var SQLListe []SQLInter
+
+var SQLListeAgg []SQLInter
+
+//var InitScanMap = map[string]func() ([]interface{}, interface{}, []string){}
+//var PreqSQLMap = map[string]string{}
+//var CheckerCalls = []func(*pgx.Conn) error{}
 
 func Register(con *pgx.Conn, stru pgtype.Value, name string, typname string, schema string) {
 
@@ -24,8 +39,7 @@ func Register(con *pgx.Conn, stru pgtype.Value, name string, typname string, sch
 	if err := con.QueryRow(`select t.oid from pg_namespace n
 		inner join pg_type t on t.typnamespace= n.oid
 		where n.nspname =any($1) and t.typname =$2`, "{"+typsql+"}", typname).Scan(&oid); err != nil {
-		fmt.Println("oids", err, typname, typsql)
-		panic(err)
+		panic(errors.Wrapf(err, "aggregat in schema %s nicht gefunden: %s", typsql, typname))
 	}
 	con.ConnInfo.RegisterDataType(pgtype.DataType{
 		Value: stru,
@@ -50,7 +64,7 @@ func SetTyp(con *pgx.Conn) error {
 		panic(err)
 	}
 
-	fmt.Println("lade oid:", len(InitOIDMap))
+	//fmt.Println("lade oid:", len(InitOIDMap))
 	for _, f := range InitOIDMap {
 		f(con)
 	}
@@ -94,7 +108,7 @@ func checker(k string, fd []pgx.FieldDescription, inter []interface{}, cols []st
 }
 
 func Prep() error {
-	fmt.Println("prepare sql:", len(InitScanMap))
+	//fmt.Println("prepare sql:", len(InitScanMap))
 	pool := GetPool()
 	con, err := pool.Acquire()
 	if err != nil {
@@ -112,63 +126,63 @@ func Prep() error {
 		return err
 	}
 
-	fmt.Println("prüfen aggregate:", len(CheckerCalls))
-	for _, x := range CheckerCalls {
-		if err := x(con); err != nil {
+	//fmt.Println("prüfen aggregate:", len(CheckerCalls))
+
+	for _, x := range SQLListeAgg {
+		sql := x.SQL()
+
+		sql = sql[strings.Index(sql, `"`)+1:]
+		pos1 := strings.Index(sql, `"`)
+		sql1 := sql[pos1+3:]
+
+		pos3 := strings.Index(sql1, `"`)
+		if err := Checkaggview(con, sql1[:pos3], sql[:pos1], x.Columns(), x.Scanner()); err != nil {
 			return err
 		}
 	}
-	fmt.Println("prüfen sql:", len(PreqSQLMap))
-	for k, x := range PreqSQLMap {
 
-		if stmt, err := pool.Prepare(k, x); err != nil {
+	//fmt.Println("prüfen sql:", len(PreqSQLMap))
+	for _, x := range SQLListe {
+		sql := x.SQL()
+		if len(sql) > 0 {
+			if stmt, err := pool.Prepare(x.Name(), sql); err != nil {
 
-			fmt.Println(err)
-			return err
+				return err
 
-		} else {
-
-			if ga, ok := InitScanMap[k]; !ok {
-				return fmt.Errorf("falsches sql %s", k)
 			} else {
 
-				inter, _, cols := ga()
-				//		sql := CheckSQLReturn(x)
-				erg := CheckSQL(x)
-				var fd []pgx.FieldDescription
-				if len(erg) > 0 {
-					if len(stmt.FieldDescriptions) > 0 {
-						var kk = k + "Return"
-						if ga, ok := InitScanMap[kk]; !ok {
-							return fmt.Errorf("falsches sql %s", kk)
-						} else {
+				if strings.Contains(x.Name(), "Return") {
 
-							inter, _, cols := ga()
-							if err := checker(kk, stmt.FieldDescriptions, inter, cols); err != nil {
-								return err
-							}
-						}
-					}
-					//	fmt.Println("testupd", x, len(erg), len(stmt.ParameterOIDs))
-					var err error
-					if fd, err = CheckOIDs(con, erg, stmt.ParameterOIDs); err != nil {
+					if err := checker(x.Name(), stmt.FieldDescriptions, x.Scanner(), x.Columns()); err != nil {
 						return err
 					}
-					//	fmt.Println(fd)
-
+					if err := pool.Deallocate(x.Name()); err != nil {
+						return err
+					}
 				} else {
-					fd = stmt.FieldDescriptions
 
-				}
-				if err := checker(k, fd, inter, cols); err != nil {
-					return err
-				}
+					erg := CheckSQL(x.SQL())
+					var fd []pgx.FieldDescription
+					if len(erg) > 0 {
 
+						//	fmt.Println("testupd", x, len(erg), len(stmt.ParameterOIDs))
+						var err error
+						if fd, err = CheckOIDs(con, erg, stmt.ParameterOIDs); err != nil {
+							return err
+						}
+						//	fmt.Println(fd)
+
+					} else {
+						fd = stmt.FieldDescriptions
+
+					}
+					if err := checker(x.Name(), fd, x.Scanner(), x.Columns()); err != nil {
+						return err
+					}
+				}
 			}
-
 		}
 	}
-
 	return nil
 }
 

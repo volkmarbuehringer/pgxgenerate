@@ -8,7 +8,7 @@ import (
 	"github.com/jackc/pgx"
 	"github.com/pkg/errors"
 
-	"pgxgenerate/pgtools/db"
+	"prounix.de/pgtools/db"
 )
 
 var writeHeader func(w io.Writer, header string)

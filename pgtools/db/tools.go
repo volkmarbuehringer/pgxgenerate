@@ -31,8 +31,8 @@ func init() {
 	r5 = regexp.MustCompile(`(?is).*\$(\d{1,2}).*`)
 	r6 = regexp.MustCompile(`(?is)(\(|\)|\+|\-|\*|\/|,|substr)`)
 	r7 = regexp.MustCompile(`(?is)(\s+and\s+|\s+or\s+)`)
-	r8 = regexp.MustCompile(`(?is)\s*` + columnname + `\s*(?:=|<|>|<>|\s+in\s+|<=|>=).*\$(\d{1,2}).*`)
-	r9 = regexp.MustCompile(`(?is)\s*\$(\d{1,2}).*(?:=|<|>|<>|\s+in\s+|<=|>=)\s*` + columnname)
+	r8 = regexp.MustCompile(`(?is)\s*` + columnname + `\s*(?:=|<|>|<>|\s+in\s+|<=|>=|\slike).*\$(\d{1,2}).*`)
+	r9 = regexp.MustCompile(`(?is)\s*\$(\d{1,2}).*(?:=|<|>|<>|\s+in\s+|<=|>=|\slike)\s*` + columnname)
 }
 
 func splitter(input string) []string {
