@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"path/filepath"
 
-	"prounix.de/pgtools/db"
-	"prounix.de/pgtools/writer"
+	"pgxgenerate/pgtools/db"
+	"pgxgenerate/pgtools/writer"
 
 	"github.com/pkg/errors"
 )

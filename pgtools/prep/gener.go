@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"prounix.de/pgtools/writer"
+	"pgxgenerate/pgtools/writer"
 
 	"github.com/jackc/pgx"
 	"github.com/jackc/pgx/pgtype"

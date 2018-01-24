@@ -6,16 +6,16 @@ import (
 	"fmt"
 	"os"
 
-	_ "prounix.de/test/generprep"
+	_ "pgxgenerate/test/generprep"
 
-	"prounix.de/pgtools/db"
-	"prounix.de/pgtools/prep"
+	"pgxgenerate/pgtools/db"
+	"pgxgenerate/pgtools/prep"
 )
 
 func main() {
 
 	defer db.End()
-	flag, err := prep.Gesamt("test", "prounix.de")
+	flag, err := prep.Gesamt("test", "pgxgenerate")
 
 	if err != nil {
 		panic(err)

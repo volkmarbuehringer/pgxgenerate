@@ -6,16 +6,17 @@ import (
 	"strings"
 	"time"
 
-	"golang.org/x/sync/errgroup"
-	"prounix.de/pgtools/writer"
+	"pgxgenerate/pgtools/writer"
 
-	"prounix.de/test/gener"
-	"prounix.de/test/generprep"
+	"golang.org/x/sync/errgroup"
+
+	"pgxgenerate/test/gener"
+	"pgxgenerate/test/generprep"
 
 	"github.com/jackc/pgx"
 	"github.com/jackc/pgx/pgtype"
 
-	"prounix.de/pgtools/db"
+	"pgxgenerate/pgtools/db"
 )
 
 func test555() {

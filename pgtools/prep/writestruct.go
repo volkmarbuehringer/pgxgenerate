@@ -6,8 +6,8 @@ import (
 
 	"github.com/jackc/pgx"
 
-	"prounix.de/pgtools/db"
-	"prounix.de/pgtools/writer"
+	"pgxgenerate/pgtools/db"
+	"pgxgenerate/pgtools/writer"
 )
 
 func writeArrayCode(name string, f *writer.Writer, bname string, schema string) error {

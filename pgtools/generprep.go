@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"os"
 
-	"prounix.de/pgtools/db"
-	"prounix.de/pgtools/prep"
+	"pgxgenerate/pgtools/db"
+	"pgxgenerate/pgtools/prep"
 )
 
 func main() {
